@@ -1,4 +1,6 @@
-import UITypes from "../UITypes";
+import UITypes from '../UITypes';
+import { IDType } from './index';
+import { ColumnType } from '~/lib';
 
 const dbTypes = [
   'int',
@@ -98,15 +100,15 @@ const dbTypes = [
   'unknown',
   'void',
   'xid',
-  'xml'
+  'xml',
 ];
 
 export class PgUi {
   static getNewTableColumns() {
     return [
       {
-       column_name: 'id',
-       title: 'Id',
+        column_name: 'id',
+        title: 'Id',
         dt: 'int4',
         dtx: 'integer',
         ct: 'int(11)',
@@ -125,14 +127,14 @@ export class PgUi {
         altered: 1,
         uidt: 'ID',
         uip: '',
-        uicn: ''
+        uicn: '',
       },
       {
-       column_name: 'title',
-       title: 'Title',
-        dt: 'character varying',
+        column_name: 'title',
+        title: 'Title',
+        dt: 'TEXT',
         dtx: 'specificType',
-        ct: 'varchar(45)',
+        ct: null,
         nrqd: true,
         rqd: false,
         ck: false,
@@ -140,20 +142,89 @@ export class PgUi {
         un: false,
         ai: false,
         cdf: null,
+        clen: null,
+        np: null,
+        ns: null,
+        dtxp: '',
+        dtxs: '',
+        altered: 1,
+        uidt: 'SingleLineText',
+        uip: '',
+        uicn: '',
+      },
+      {
+        column_name: 'created_at',
+        title: 'CreatedAt',
+        dt: 'timestamp',
+        dtx: 'specificType',
+        ct: 'timestamp',
+        nrqd: true,
+        rqd: false,
+        ck: false,
+        pk: false,
+        un: false,
+        ai: false,
+        clen: 45,
+        np: null,
+        ns: null,
+        dtxp: '',
+        dtxs: '',
+        altered: 1,
+        uidt: UITypes.CreatedTime,
+        uip: '',
+        uicn: '',
+        system: true,
+      },
+      {
+        column_name: 'updated_at',
+        title: 'UpdatedAt',
+        dt: 'timestamp',
+        dtx: 'specificType',
+        ct: 'timestamp',
+        nrqd: true,
+        rqd: false,
+        ck: false,
+        pk: false,
+        un: false,
+        ai: false,
+        clen: 45,
+        np: null,
+        ns: null,
+        dtxp: '',
+        dtxs: '',
+        altered: 1,
+        uidt: UITypes.LastModifiedTime,
+        uip: '',
+        uicn: '',
+        system: true,
+      },
+      {
+        column_name: 'created_by',
+        title: 'nc_created_by',
+        dt: 'varchar',
+        dtx: 'specificType',
+        ct: 'varchar(45)',
+        nrqd: true,
+        rqd: false,
+        ck: false,
+        pk: false,
+        un: false,
+        ai: false,
         clen: 45,
         np: null,
         ns: null,
         dtxp: '45',
         dtxs: '',
         altered: 1,
-        uidt: 'SingleLineText',
+        uidt: UITypes.CreatedBy,
         uip: '',
-        uicn: ''
+        uicn: '',
+        system: true,
       },
       {
-       column_name: 'created_at',
-       title: 'CreatedAt',
-        dt: 'timestamp',
+        column_name: 'updated_by',
+        title: 'nc_updated_by',
+        dt: 'varchar',
         dtx: 'specificType',
         ct: 'varchar(45)',
         nrqd: true,
@@ -162,50 +233,50 @@ export class PgUi {
         pk: false,
         un: false,
         ai: false,
-        cdf: 'now()',
         clen: 45,
         np: null,
         ns: null,
-        dtxp: '',
+        dtxp: '45',
         dtxs: '',
         altered: 1,
-        uidt: UITypes.DateTime,
+        uidt: UITypes.LastModifiedBy,
         uip: '',
-        uicn: ''
+        uicn: '',
+        system: true,
       },
       {
-       column_name: 'updated_at',
-       title: 'UpdatedAt',
-        dt: 'timestamp',
+        column_name: 'nc_order',
+        title: 'nc_order',
+        dt: 'numeric',
         dtx: 'specificType',
-        ct: 'varchar(45)',
+        ct: 'numeric(40,20)',
         nrqd: true,
         rqd: false,
         ck: false,
         pk: false,
         un: false,
         ai: false,
-        au: true,
-        cdf: 'now()',
-        clen: 45,
-        np: null,
-        ns: null,
-        dtxp: '',
+        cdf: null,
+        clen: null,
+        np: 40,
+        ns: 20,
+        dtxp: '40,20',
         dtxs: '',
         altered: 1,
-        uidt: UITypes.DateTime,
+        uidt: UITypes.Order,
         uip: '',
-        uicn: ''
-      }
+        uicn: '',
+        system: true,
+      },
     ];
   }
 
   static getNewColumn(suffix) {
     return {
-     column_name: 'title' + suffix,
-      dt: 'int4',
+      column_name: 'title' + suffix,
+      dt: 'TEXT',
       dtx: 'specificType',
-      ct: 'integer(11)',
+      ct: null,
       nrqd: true,
       rqd: false,
       ck: false,
@@ -213,16 +284,15 @@ export class PgUi {
       un: false,
       ai: false,
       cdf: null,
-      clen: 45,
+      clen: null,
       np: null,
       ns: null,
-      // data_type_x_specific: ' ',
-      dtxp: '11',
-      dtxs: ' ',
+      dtxp: '',
+      dtxs: '',
       altered: 1,
-      uidt: 'Number',
+      uidt: 'SingleLineText',
       uip: '',
-      uicn: ''
+      uicn: '',
     };
   }
 
@@ -871,7 +941,7 @@ export class PgUi {
         return 'eg: ';
 
       case 'character varying':
-        return 'eg: ';
+        return "eg: 'sample text'";
 
       case 'tinyint':
         return 'eg: ';
@@ -1159,15 +1229,18 @@ export class PgUi {
   static columnEditable(colObj) {
     return colObj.tn !== '_evolutions' || colObj.tn !== 'nc_evolutions';
   }
+  /*
 
   static extractFunctionName(query) {
-    const reg = /^\s*CREATE\s+(?:OR\s+REPLACE\s*)?\s*FUNCTION\s+(?:[\w\d_]+\.)?([\w_\d]+)/i;
+    const reg =
+      /^\s*CREATE\s+(?:OR\s+REPLACE\s*)?\s*FUNCTION\s+(?:[\w\d_]+\.)?([\w_\d]+)/i;
     const match = query.match(reg);
     return match && match[1];
   }
 
   static extractProcedureName(query) {
-    const reg = /^\s*CREATE\s+(?:OR\s+REPLACE\s*)?\s*PROCEDURE\s+(?:[\w\d_]+\.)?([\w_\d]+)/i;
+    const reg =
+      /^\s*CREATE\s+(?:OR\s+REPLACE\s*)?\s*PROCEDURE\s+(?:[\w\d_]+\.)?([\w_\d]+)/i;
     const match = query.match(reg);
     return match && match[1];
   }
@@ -1177,8 +1250,8 @@ export class PgUi {
       headers.push({ text: 'Row count', value: 'rowCount', sortable: false });
       result = [
         {
-          rowCount: result.rowCount
-        }
+          rowCount: result.rowCount,
+        },
       ];
     } else {
       result = result.rows;
@@ -1195,18 +1268,18 @@ export class PgUi {
   }
 
   static splitQueries(query) {
-    /***
+    /!***
      * we are splitting based on semicolon
      * there are mechanism to escape semicolon within single/double quotes(string)
-     */
+     *!/
     return query.match(/\b("[^"]*;[^"]*"|'[^']*;[^']*'|[^;])*;/g);
   }
 
-  /**
+  /!**
    * if sql statement is SELECT - it limits to a number
    * @param args
    * @returns {string|*}
-   */
+   *!/
   sanitiseQuery(args) {
     let q = args.query.trim().split(';');
 
@@ -1233,7 +1306,7 @@ export class PgUi {
           const column = {
             dp: null,
             tn,
-           column_name: keys[i],
+            column_name: keys[i],
             cno: keys[i],
             np: 10,
             ns: 0,
@@ -1252,7 +1325,7 @@ export class PgUi {
             dtx: 'specificType',
             dtxp: null,
             dtxs: 0,
-            altered: 1
+            altered: 1,
           };
 
           switch (typeof json[keys[i]]) {
@@ -1260,13 +1333,13 @@ export class PgUi {
               if (Number.isInteger(json[keys[i]])) {
                 if (PgUi.isValidTimestamp(keys[i], json[keys[i]])) {
                   Object.assign(column, {
-                    dt: 'timestamp'
+                    dt: 'timestamp',
                   });
                 } else {
                   Object.assign(column, {
                     dt: 'int',
                     np: 10,
-                    ns: 0
+                    ns: 0,
                   });
                 }
               } else {
@@ -1275,25 +1348,25 @@ export class PgUi {
                   np: null,
                   ns: null,
                   dtxp: null,
-                  dtxs: null
+                  dtxs: null,
                 });
               }
               break;
             case 'string':
               if (PgUi.isValidDate(json[keys[i]])) {
                 Object.assign(column, {
-                  dt: 'date'
+                  dt: 'date',
                 });
               } else if (json[keys[i]].length <= 255) {
                 Object.assign(column, {
                   dt: 'character varying',
                   np: null,
                   ns: 0,
-                  dtxp: null
+                  dtxp: null,
                 });
               } else {
                 Object.assign(column, {
-                  dt: 'text'
+                  dt: 'text',
                 });
               }
               break;
@@ -1301,14 +1374,14 @@ export class PgUi {
               Object.assign(column, {
                 dt: 'boolean',
                 np: 3,
-                ns: 0
+                ns: 0,
               });
               break;
             case 'object':
               Object.assign(column, {
                 dt: 'json',
                 np: 3,
-                ns: 0
+                ns: 0,
               });
               break;
             default:
@@ -1334,6 +1407,7 @@ export class PgUi {
   static isValidDate(value) {
     return new Date(value).getTime() > 0;
   }
+*/
 
   static colPropAuDisabled(col) {
     if (col.altered !== 1) {
@@ -1356,7 +1430,7 @@ export class PgUi {
   }
 
   static getAbstractType(col): any {
-    switch ((col.dt || col.dt).toLowerCase()) {
+    switch (col.dt?.toLowerCase()) {
       case 'anyenum':
         return 'enum';
       case 'anynonarray':
@@ -1365,9 +1439,6 @@ export class PgUi {
 
       case 'bit':
         return 'integer';
-      case 'bigint':
-      case 'bigserial':
-        return 'string';
 
       case 'bool':
         return 'boolean';
@@ -1389,13 +1460,12 @@ export class PgUi {
         return 'date';
       case 'daterange':
         return 'string';
-      case 'double precision':
-        return 'string';
 
       case 'event_trigger':
       case 'fdw_handler':
         return 'string';
 
+      case 'double precision':
       case 'float4':
       case 'float8':
         return 'float';
@@ -1410,13 +1480,13 @@ export class PgUi {
       case 'int4':
       case 'int8':
       case 'integer':
+      case 'bigint':
+      case 'bigserial':
         return 'integer';
       case 'int4range':
       case 'int8range':
       case 'internal':
       case 'interval':
-        return 'string';
-      case 'jsonb':
         return 'string';
 
       case 'language_handler':
@@ -1522,7 +1592,6 @@ export class PgUi {
       case 'longblob':
         return 'blob';
       case 'enum':
-
         return 'enum';
       case 'set':
         return 'set';
@@ -1533,6 +1602,7 @@ export class PgUi {
       case 'multipolygon':
         return 'string';
       case 'json':
+      case 'jsonb':
         return 'json';
     }
   }
@@ -1548,7 +1618,7 @@ export class PgUi {
       case 'date':
         return 'Date';
       case 'datetime':
-        return 'CreateTime';
+        return 'CreatedTime';
       case 'time':
         return 'Time';
       case 'year':
@@ -1568,21 +1638,26 @@ export class PgUi {
     }
   }
 
-  static getDataTypeForUiType(col) {
+  static getDataTypeForUiType(col: { uidt: UITypes }, idType?: IDType) {
     const colProp: any = {};
     switch (col.uidt) {
       case 'ID':
-        colProp.dt = 'int4';
-        colProp.pk = true;
-        colProp.un = true;
-        colProp.ai = true;
-        colProp.rqd = true;
+        {
+          const isAutoIncId = idType === 'AI';
+          const isAutoGenId = idType === 'AG';
+          colProp.dt = isAutoGenId ? 'character varying' : 'int4';
+          colProp.pk = true;
+          colProp.un = isAutoIncId;
+          colProp.ai = isAutoIncId;
+          colProp.rqd = true;
+          colProp.meta = isAutoGenId ? { ag: 'nc' } : undefined;
+        }
         break;
       case 'ForeignKey':
         colProp.dt = 'character varying';
         break;
       case 'SingleLineText':
-        colProp.dt = 'character varying';
+        colProp.dt = 'text';
         break;
       case 'LongText':
         colProp.dt = 'text';
@@ -1590,8 +1665,12 @@ export class PgUi {
       case 'Attachment':
         colProp.dt = 'text';
         break;
+      case 'GeoData':
+        colProp.dt = 'text';
+        break;
       case 'Checkbox':
         colProp.dt = 'bool';
+        colProp.cdf = 'false';
         break;
       case 'MultiSelect':
         colProp.dt = 'text';
@@ -1617,7 +1696,7 @@ export class PgUi {
         colProp.validate = {
           func: ['isMobilePhone'],
           args: [''],
-          msg: ['Validation failed : isMobilePhone']
+          msg: ['Validation failed : isMobilePhone'],
         };
         break;
       case 'Email':
@@ -1625,15 +1704,15 @@ export class PgUi {
         colProp.validate = {
           func: ['isEmail'],
           args: [''],
-          msg: ['Validation failed : isEmail']
+          msg: ['Validation failed : isEmail'],
         };
         break;
       case 'URL':
-        colProp.dt = 'character varying';
+        colProp.dt = 'text';
         colProp.validate = {
           func: ['isURL'],
           args: [''],
-          msg: ['Validation failed : isURL']
+          msg: ['Validation failed : isURL'],
         };
         break;
       case 'Number':
@@ -1647,17 +1726,18 @@ export class PgUi {
         colProp.validate = {
           func: ['isCurrency'],
           args: [''],
-          msg: ['Validation failed : isCurrency']
+          msg: ['Validation failed : isCurrency'],
         };
         break;
       case 'Percent':
-        colProp.dt = 'double';
+        colProp.dt = 'double precision';
         break;
       case 'Duration':
-        colProp.dt = 'int8';
+        colProp.dt = 'decimal';
         break;
       case 'Rating':
-        colProp.dt = 'float8';
+        colProp.dt = 'smallint';
+        colProp.cdf = '0';
         break;
       case 'Formula':
         colProp.dt = 'character varying';
@@ -1674,7 +1754,7 @@ export class PgUi {
       case 'DateTime':
         colProp.dt = 'timestamp';
         break;
-      case 'CreateTime':
+      case 'CreatedTime':
         colProp.dt = 'timestamp';
         break;
       case 'LastModifiedTime':
@@ -1692,6 +1772,9 @@ export class PgUi {
       case 'JSON':
         colProp.dt = 'json';
         break;
+      case 'Order':
+        colProp.dt = 'numeric';
+        break;
       default:
         colProp.dt = 'character varying';
         break;
@@ -1699,22 +1782,43 @@ export class PgUi {
     return colProp;
   }
 
-  static getDataTypeListForUiType(col) {
+  static getDataTypeListForUiType(col: { uidt?: UITypes }, idType: IDType) {
     switch (col.uidt) {
       case 'ID':
+        if (idType === 'AG') {
+          return ['char', 'character', 'character varying'];
+        } else if (idType === 'AI') {
+          return [
+            'int',
+            'integer',
+            'bigint',
+            'bigserial',
+            'int2',
+            'int4',
+            'int8',
+            'serial',
+            'serial2',
+            'serial8',
+            'smallint',
+            'smallserial',
+          ];
+        } else {
+          return dbTypes;
+        }
       case 'ForeignKey':
         return dbTypes;
 
       case 'SingleLineText':
       case 'LongText':
       case 'Collaborator':
-        return ['char', 'character', 'character varying', 'text'];
+      case 'GeoData':
+        return ['text', 'character varying', 'char', 'character'];
 
       case 'Attachment':
-        return ['json', 'char', 'character', 'character varying', 'text'];
+        return ['json', 'text', 'char', 'character', 'character varying'];
 
       case 'JSON':
-        return ['json', 'text'];
+        return ['json', 'jsonb', 'text'];
       case 'Checkbox':
         return [
           'bit',
@@ -1733,7 +1837,7 @@ export class PgUi {
           'int8range',
           'serial',
           'serial2',
-          'serial8'
+          'serial8',
         ];
 
       case 'MultiSelect':
@@ -1754,7 +1858,7 @@ export class PgUi {
           'timestamptz',
           'timestamp with time zone',
           'timetz',
-          'time with time zone'
+          'time with time zone',
         ];
 
       case 'PhoneNumber':
@@ -1762,7 +1866,7 @@ export class PgUi {
         return ['character varying'];
 
       case 'URL':
-        return ['character varying', 'text'];
+        return ['text', 'character varying'];
 
       case 'Number':
         return [
@@ -1781,7 +1885,7 @@ export class PgUi {
           'float8',
           'smallint',
           'smallserial',
-          'numeric'
+          'numeric',
         ];
 
       case 'Decimal':
@@ -1803,7 +1907,7 @@ export class PgUi {
           'money',
           'float4',
           'float8',
-          'numeric'
+          'numeric',
         ];
 
       case 'Percent':
@@ -1823,7 +1927,7 @@ export class PgUi {
           'float8',
           'smallint',
           'smallserial',
-          'numeric'
+          'numeric',
         ];
 
       case 'Duration':
@@ -1843,7 +1947,7 @@ export class PgUi {
           'float8',
           'smallint',
           'smallserial',
-          'numeric'
+          'numeric',
         ];
 
       case 'Rating':
@@ -1863,10 +1967,11 @@ export class PgUi {
           'float8',
           'smallint',
           'smallserial',
-          'numeric'
+          'numeric',
         ];
 
       case 'Formula':
+      case 'Button':
         return ['text', 'character varying'];
 
       case 'Rollup':
@@ -1885,7 +1990,7 @@ export class PgUi {
           'serial2',
           'serial8',
           'smallint',
-          'smallserial'
+          'smallserial',
         ];
 
       case 'Lookup':
@@ -1897,18 +2002,23 @@ export class PgUi {
           'timestamp',
           'timestamp without time zone',
           'timestamptz',
-          'timestamp with time zone'
+          'timestamp with time zone',
         ];
 
       case 'DateTime':
-      case 'CreateTime':
+      case 'CreatedTime':
       case 'LastModifiedTime':
         return [
           'timestamp',
           'timestamp without time zone',
           'timestamptz',
-          'timestamp with time zone'
+          'timestamp with time zone',
         ];
+
+      case 'User':
+      case 'CreatedBy':
+      case 'LastModifiedBy':
+        return ['character varying'];
 
       case 'AutoNumber':
         return [
@@ -1923,8 +2033,11 @@ export class PgUi {
           'serial2',
           'serial8',
           'smallint',
-          'smallserial'
+          'smallserial',
         ];
+
+      case 'Order':
+        return ['numeric'];
 
       case 'Barcode':
         return ['character varying'];
@@ -1938,10 +2051,9 @@ export class PgUi {
           'line',
           'lseg',
           'path',
-          'circle'
+          'circle',
         ];
 
-      case 'Button':
       default:
         return dbTypes;
     }
@@ -1950,28 +2062,29 @@ export class PgUi {
   static getUnsupportedFnList() {
     return [];
   }
+
+  static getCurrentDateDefault(col: Partial<ColumnType>) {
+    if (col.uidt === UITypes.DateTime || col.uidt === UITypes.Date) {
+      return 'NOW()';
+    }
+    return null;
+  }
+
+  static isEqual(dataType1: string, dataType2: string) {
+    if (dataType1?.toLowerCase() === dataType2?.toLowerCase()) return true;
+
+    const abstractType1 = this.getAbstractType({ dt: dataType1 });
+    const abstractType2 = this.getAbstractType({ dt: dataType2 });
+
+    if (
+      abstractType1 &&
+      abstractType1 === abstractType2 &&
+      ['integer', 'float'].includes(abstractType1)
+    )
+      return true;
+
+    return false;
+  }
 }
 
 // module.exports = PgUiHelp;
-/**
- * @copyright Copyright (c) 2021, Xgene Cloud Ltd
- *
- * @author Naveen MR <oof1lab@gmail.com>
- * @author Pranav C Balan <pranavxc@gmail.com>
- *
- * @license GNU AGPL version 3 or any later version
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
- */

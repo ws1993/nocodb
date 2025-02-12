@@ -1,4 +1,6 @@
-import UITypes from "../UITypes";
+import UITypes from '../UITypes';
+import { IDType } from './index';
+import { ColumnType } from '~/lib';
 
 const dbTypes = [
   'bigint',
@@ -35,15 +37,15 @@ const dbTypes = [
   'uniqueidentifier',
   'varbinary',
   'xml',
-  'varchar'
+  'varchar',
 ];
 
 export class MssqlUi {
   static getNewTableColumns() {
     return [
       {
-       column_name: 'id',
-       title: 'Id',
+        column_name: 'id',
+        title: 'Id',
         dt: 'int',
         dtx: 'integer',
         ct: 'int(11)',
@@ -62,11 +64,81 @@ export class MssqlUi {
         altered: 1,
         uidt: 'ID',
         uip: '',
-        uicn: ''
+        uicn: '',
       },
       {
-       column_name: 'title',
-       title: 'Title',
+        column_name: 'title',
+        title: 'Title',
+        dt: 'TEXT',
+        dtx: 'specificType',
+        ct: null,
+        nrqd: true,
+        rqd: false,
+        ck: false,
+        pk: false,
+        un: false,
+        ai: false,
+        cdf: null,
+        clen: null,
+        np: null,
+        ns: null,
+        dtxp: '',
+        dtxs: '',
+        altered: 1,
+        uidt: 'SingleLineText',
+        uip: '',
+        uicn: '',
+      },
+      {
+        column_name: 'created_at',
+        title: 'CreatedAt',
+        dt: 'datetime',
+        dtx: 'specificType',
+        ct: 'datetime',
+        nrqd: true,
+        rqd: false,
+        ck: false,
+        pk: false,
+        un: false,
+        ai: false,
+        clen: 45,
+        np: null,
+        ns: null,
+        dtxp: '',
+        dtxs: '',
+        altered: 1,
+        uidt: UITypes.CreatedTime,
+        uip: '',
+        uicn: '',
+        system: true,
+      },
+      {
+        column_name: 'updated_at',
+        title: 'UpdatedAt',
+        dt: 'datetime',
+        dtx: 'specificType',
+        ct: 'datetime',
+        nrqd: true,
+        rqd: false,
+        ck: false,
+        pk: false,
+        un: false,
+        ai: false,
+        au: true,
+        clen: 45,
+        np: null,
+        ns: null,
+        dtxp: '',
+        dtxs: '',
+        altered: 1,
+        uidt: UITypes.LastModifiedTime,
+        uip: '',
+        uicn: '',
+        system: true,
+      },
+      {
+        column_name: 'created_by',
+        title: 'nc_created_by',
         dt: 'varchar',
         dtx: 'specificType',
         ct: 'varchar(45)',
@@ -76,21 +148,21 @@ export class MssqlUi {
         pk: false,
         un: false,
         ai: false,
-        cdf: null,
         clen: 45,
         np: null,
         ns: null,
         dtxp: '45',
         dtxs: '',
         altered: 1,
-        uidt: 'SingleLineText',
+        uidt: UITypes.CreatedBy,
         uip: '',
-        uicn: ''
+        uicn: '',
+        system: true,
       },
       {
-       column_name: 'created_at',
-       title: 'CreatedAt',
-        dt: 'datetime',
+        column_name: 'updated_by',
+        title: 'nc_updated_by',
+        dt: 'varchar',
         dtx: 'specificType',
         ct: 'varchar(45)',
         nrqd: true,
@@ -99,49 +171,50 @@ export class MssqlUi {
         pk: false,
         un: false,
         ai: false,
-        cdf: 'GETDATE()',
         clen: 45,
         np: null,
         ns: null,
-        dtxp: '',
+        dtxp: '45',
         dtxs: '',
         altered: 1,
-        uidt: UITypes.DateTime,
+        uidt: UITypes.LastModifiedBy,
         uip: '',
-        uicn: ''
+        uicn: '',
+        system: true,
       },
       {
-       column_name: 'updated_at',
-       title: 'UpdatedAt',
-        dt: 'datetime',
+        column_name: 'nc_order',
+        title: 'nc_order',
+        dt: 'decimal',
         dtx: 'specificType',
-        ct: 'varchar(45)',
+        ct: 'decimal(38,19)',
         nrqd: true,
         rqd: false,
         ck: false,
         pk: false,
         un: false,
         ai: false,
-        cdf: 'GETDATE()',
-        clen: 45,
-        np: null,
-        ns: null,
-        dtxp: '',
+        cdf: null,
+        clen: null,
+        np: 38,
+        ns: 19,
+        dtxp: '38,19',
         dtxs: '',
         altered: 1,
-        uidt: UITypes.DateTime,
+        uidt: UITypes.Order,
         uip: '',
-        uicn: ''
-      }
+        uicn: '',
+        system: true,
+      },
     ];
   }
 
   static getNewColumn(suffix) {
     return {
-     column_name: 'title' + suffix,
-      dt: 'int',
+      column_name: 'title' + suffix,
+      dt: 'TEXT',
       dtx: 'specificType',
-      ct: 'integer(11)',
+      ct: null,
       nrqd: true,
       rqd: false,
       ck: false,
@@ -149,242 +222,24 @@ export class MssqlUi {
       un: false,
       ai: false,
       cdf: null,
-      clen: 45,
+      clen: null,
       np: null,
       ns: null,
-      // data_type_x_specific: ' ',
       dtxp: '',
-      dtxs: ' ',
+      dtxs: '',
       altered: 1,
-      uidt: 'Number',
+      uidt: 'SingleLineText',
       uip: '',
-      uicn: ''
+      uicn: '',
     };
   }
 
-  // static getDefaultLengthForDatatype(type) {
-  //   switch (type) {
-  //     case "int":
-  //       return 11;
-  //       break;
-  //     case "tinyint":
-  //       return 1;
-  //       break;
-  //     case "smallint":
-  //       return 5;
-  //       break;
-  //
-  //     case "mediumint":
-  //       return 9;
-  //       break;
-  //     case "bigint":
-  //       return 20;
-  //       break;
-  //     case "bit":
-  //       return 64;
-  //       break;
-  //     case "boolean":
-  //       return '';
-  //       break;
-  //     case "float":
-  //       return 12;
-  //       break;
-  //     case "decimal":
-  //       return 10;
-  //       break;
-  //     case "double":
-  //       return 22;
-  //       break;
-  //     case "serial":
-  //       return 20;
-  //       break;
-  //     case "date":
-  //       return '';
-  //       break;
-  //     case "datetime":
-  //     case "timestamp":
-  //       return 6;
-  //       break;
-  //     case "time":
-  //       return '';
-  //       break;
-  //     case "year":
-  //       return '';
-  //       break;
-  //     case "char":
-  //       return 255;
-  //       break;
-  //     case "varchar":
-  //       return 45;
-  //       break;
-  //     case "nchar":
-  //       return 255;
-  //       break;
-  //     case "text":
-  //       return '';
-  //       break;
-  //     case "tinytext":
-  //       return '';
-  //       break;
-  //     case "mediumtext":
-  //       return '';
-  //       break;
-  //     case "longtext":
-  //       return ''
-  //       break;
-  //     case "binary":
-  //       return 255;
-  //       break;
-  //     case "varbinary":
-  //       return 65500;
-  //       break;
-  //     case "blob":
-  //       return '';
-  //       break;
-  //     case "tinyblob":
-  //       return '';
-  //       break;
-  //     case "mediumblob":
-  //       return '';
-  //       break;
-  //     case "longblob":
-  //       return '';
-  //       break;
-  //     case "enum":
-  //       return '\'a\',\'b\'';
-  //       break;
-  //     case "set":
-  //       return '\'a\',\'b\'';
-  //       break;
-  //     case "geometry":
-  //       return '';
-  //     case "point":
-  //       return '';
-  //     case "linestring":
-  //       return '';
-  //     case "polygon":
-  //       return '';
-  //     case "multipoint":
-  //       return '';
-  //     case "multilinestring":
-  //       return '';
-  //     case "multipolygon":
-  //       return '';
-  //     case "json":
-  //       return ''
-  //       break;
-  //
-  //   }
-  //
-  // }
-
   static getDefaultLengthForDatatype(type) {
     switch (type) {
-      case 'bigint':
-        return '';
-
-      case 'binary':
-        return '';
-
-      case 'bit':
-        return '';
-
-      case 'char':
-        return '';
-
-      case 'date':
-        return '';
-
-      case 'datetime':
-        return '';
-
-      case 'datetime2':
-        return '';
-
-      case 'datetimeoffset':
-        return '';
-
       case 'decimal':
-        return '';
-
-      case 'float':
-        return '';
-
-      case 'geography':
-        return '';
-
-      case 'geometry':
-        return '';
-
-      case 'heirarchyid':
-        return '';
-
-      case 'image':
-        return '';
-
-      case 'int':
-        return '';
-
-      case 'money':
-        return '';
-
-      case 'nchar':
-        return '';
-
-      case 'ntext':
-        return '';
-
-      case 'numeric':
-        return '';
-
-      case 'nvarchar':
-        return '';
-
-      case 'real':
-        return '';
-
-      case 'json':
-        return '';
-
-      case 'smalldatetime':
-        return '';
-
-      case 'smallint':
-        return '';
-
-      case 'smallmoney':
-        return '';
-
-      case 'sql_variant':
-        return '';
-
-      case 'sysname':
-        return '';
-
-      case 'text':
-        return '';
-
-      case 'time':
-        return '';
-
-      case 'timestamp':
-        return '';
-
-      case 'tinyint':
-        return '';
-
-      case 'uniqueidentifier':
-        return '';
-
-      case 'varbinary':
-        return '';
-
-      case 'xml':
-        return '';
-
+        return 10;
       case 'varchar':
-        return '';
-
+        return 255;
       default:
         return '';
     }
@@ -392,45 +247,11 @@ export class MssqlUi {
 
   static getDefaultLengthIsDisabled(type) {
     switch (type) {
-      case 'bigint':
-      case 'binary':
-      case 'bit':
-      case 'char':
-      case 'date':
-      case 'datetime':
-      case 'datetime2':
-      case 'datetimeoffset':
-      case 'decimal':
-      case 'float':
-      case 'geography':
-      case 'geometry':
-      case 'heirarchyid':
-      case 'image':
-      case 'int':
-      case 'money':
-      case 'nchar':
-      case 'ntext':
-      case 'numeric':
       case 'nvarchar':
-      case 'real':
-      case 'json':
-      case 'smalldatetime':
-      case 'smallint':
-      case 'smallmoney':
-      case 'sql_variant':
-      case 'sysname':
-      case 'text':
-      case 'time':
-      case 'timestamp':
-      case 'tinyint':
-      case 'uniqueidentifier':
-      case 'varbinary':
-      case 'xml':
-        return true;
-
+      case 'numeric':
+      case 'decimal':
       case 'varchar':
         return false;
-
       default:
         return true;
     }
@@ -439,110 +260,41 @@ export class MssqlUi {
   static getDefaultValueForDatatype(type) {
     switch (type) {
       case 'bigint':
-        return 'eg: ';
-
       case 'binary':
-        return 'eg: ';
-
       case 'bit':
-        return 'eg: ';
-
       case 'char':
-        return 'eg: ';
-
       case 'date':
-        return 'eg: ';
-
       case 'datetime':
-        return 'eg: ';
-
       case 'datetime2':
-        return 'eg: ';
-
       case 'datetimeoffset':
-        return 'eg: ';
-
       case 'decimal':
-        return 'eg: ';
-
       case 'float':
-        return 'eg: ';
-
       case 'geography':
-        return 'eg: ';
-
       case 'geometry':
-        return 'eg: ';
-
       case 'heirarchyid':
-        return 'eg: ';
-
       case 'image':
-        return 'eg: ';
-
       case 'int':
-        return 'eg: ';
-
       case 'money':
-        return 'eg: ';
-
       case 'nchar':
-        return 'eg: ';
-
       case 'ntext':
-        return 'eg: ';
-
       case 'numeric':
-        return 'eg: ';
-
       case 'nvarchar':
-        return 'eg: ';
-
       case 'real':
-        return 'eg: ';
-
       case 'json':
-        return 'eg: ';
-
       case 'smalldatetime':
-        return 'eg: ';
-
       case 'smallint':
-        return 'eg: ';
-
       case 'smallmoney':
-        return 'eg: ';
-
       case 'sql_variant':
-        return 'eg: ';
-
       case 'sysname':
-        return 'eg: ';
-
       case 'text':
-        return 'eg: ';
-
       case 'time':
-        return 'eg: ';
-
       case 'timestamp':
-        return 'eg: ';
-
       case 'tinyint':
-        return 'eg: ';
-
       case 'uniqueidentifier':
-        return 'eg: ';
-
       case 'varbinary':
-        return 'eg: ';
-
       case 'xml':
-        return 'eg: ';
-
       case 'varchar':
         return 'eg: ';
-
       default:
         return '';
     }
@@ -550,111 +302,9 @@ export class MssqlUi {
 
   static getDefaultScaleForDatatype(type) {
     switch (type) {
-      case 'bigint':
-        return '';
-
-      case 'binary':
-        return '';
-
-      case 'bit':
-        return '';
-
-      case 'char':
-        return '';
-
-      case 'date':
-        return '';
-
-      case 'datetime':
-        return '';
-
-      case 'datetime2':
-        return '';
-
-      case 'datetimeoffset':
-        return '';
-
       case 'decimal':
-        return '';
-
-      case 'float':
-        return '';
-
-      case 'geography':
-        return '';
-
-      case 'geometry':
-        return '';
-
-      case 'heirarchyid':
-        return '';
-
-      case 'image':
-        return '';
-
-      case 'int':
-        return '';
-
-      case 'money':
-        return '';
-
-      case 'nchar':
-        return '';
-
-      case 'ntext':
-        return '';
-
       case 'numeric':
-        return '';
-
-      case 'nvarchar':
-        return '';
-
-      case 'real':
-        return '';
-
-      case 'json':
-        return '';
-
-      case 'smalldatetime':
-        return '';
-
-      case 'smallint':
-        return '';
-
-      case 'smallmoney':
-        return '';
-
-      case 'sql_variant':
-        return '';
-
-      case 'sysname':
-        return '';
-
-      case 'text':
-        return '';
-
-      case 'time':
-        return '';
-
-      case 'timestamp':
-        return '';
-
-      case 'tinyint':
-        return '';
-
-      case 'uniqueidentifier':
-        return '';
-
-      case 'varbinary':
-        return '';
-
-      case 'xml':
-        return '';
-
-      case 'varchar':
-        return '';
-
+        return '2';
       default:
         return '';
     }
@@ -680,17 +330,7 @@ export class MssqlUi {
   }
 
   static colPropUNDisabled(_col) {
-    // console.log(col);
     return true;
-    // if (col.dt === 'int' ||
-    //   col.dt === 'tinyint' ||
-    //   col.dt === 'smallint' ||
-    //   col.dt === 'mediumint' ||
-    //   col.dt === 'bigint') {
-    //   return false;
-    // } else {
-    //   return true;
-    // }
   }
 
   static onCheckboxChangeAI(col) {
@@ -703,16 +343,10 @@ export class MssqlUi {
     ) {
       col.altered = col.altered || 2;
     }
-
-    // if (!col.ai) {
-    //   col.dtx = 'specificType'
-    // } else {
-    //   col.dtx = ''
-    // }
   }
 
-  static showScale(_columnObj) {
-    return false;
+  static showScale(columnObj) {
+    return columnObj.dt === 'decimal' || columnObj.dt === 'numeric';
   }
 
   static removeUnsigned(columns) {
@@ -738,14 +372,18 @@ export class MssqlUi {
     return colObj.tn !== '_evolutions' || colObj.tn !== 'nc_evolutions';
   }
 
+  /*
+
   static extractFunctionName(query) {
-    const reg = /^\s*CREATE\s+(?:OR\s+REPLACE\s*)?\s*FUNCTION\s+(?:[\w\d_]+\.)?([\w_\d]+)/i;
+    const reg =
+      /^\s*CREATE\s+(?:OR\s+REPLACE\s*)?\s*FUNCTION\s+(?:[\w\d_]+\.)?([\w_\d]+)/i;
     const match = query.match(reg);
     return match && match[1];
   }
 
   static extractProcedureName(query) {
-    const reg = /^\s*CREATE\s+(?:OR\s+REPLACE\s*)?\s*PROCEDURE\s+(?:[\w\d_]+\.)?([\w_\d]+)/i;
+    const reg =
+      /^\s*CREATE\s+(?:OR\s+REPLACE\s*)?\s*PROCEDURE\s+(?:[\w\d_]+\.)?([\w_\d]+)/i;
     const match = query.match(reg);
     return match && match[1];
   }
@@ -768,18 +406,18 @@ export class MssqlUi {
   }
 
   static splitQueries(query) {
-    /***
+    /!***
      * we are splitting based on semicolon
      * there are mechanism to escape semicolon within single/double quotes(string)
-     */
+     *!/
     return query.match(/\b("[^"]*;[^"]*"|'[^']*;[^']*'|[^;])*;/g);
   }
 
-  /**
+  /!**
    * if sql statement is SELECT - it limits to a number
    * @param args
    * @returns {string|*}
-   */
+   *!/
   sanitiseQuery(args) {
     let q = args.query.trim().split(';');
 
@@ -806,7 +444,7 @@ export class MssqlUi {
           const column = {
             dp: null,
             tn,
-           column_name: keys[i],
+            column_name: keys[i],
             cno: keys[i],
             np: 10,
             ns: 0,
@@ -825,7 +463,7 @@ export class MssqlUi {
             dtx: 'specificType',
             dtxp: null,
             dtxs: 0,
-            altered: 1
+            altered: 1,
           };
 
           switch (typeof json[keys[i]]) {
@@ -833,13 +471,13 @@ export class MssqlUi {
               if (Number.isInteger(json[keys[i]])) {
                 if (MssqlUi.isValidTimestamp(keys[i], json[keys[i]])) {
                   Object.assign(column, {
-                    dt: 'timestamp'
+                    dt: 'timestamp',
                   });
                 } else {
                   Object.assign(column, {
                     dt: 'int',
                     np: 10,
-                    ns: 0
+                    ns: 0,
                   });
                 }
               } else {
@@ -848,25 +486,25 @@ export class MssqlUi {
                   np: 10,
                   ns: 2,
                   dtxp: '11',
-                  dtxs: 2
+                  dtxs: 2,
                 });
               }
               break;
             case 'string':
               if (MssqlUi.isValidDate(json[keys[i]])) {
                 Object.assign(column, {
-                  dt: 'datetime'
+                  dt: 'datetime',
                 });
               } else if (json[keys[i]].length <= 255) {
                 Object.assign(column, {
                   dt: 'varchar',
                   np: 255,
                   ns: 0,
-                  dtxp: '255'
+                  dtxp: '255',
                 });
               } else {
                 Object.assign(column, {
-                  dt: 'text'
+                  dt: 'text',
                 });
               }
               break;
@@ -874,7 +512,7 @@ export class MssqlUi {
               Object.assign(column, {
                 dt: 'bit',
                 np: null,
-                ns: 0
+                ns: 0,
               });
               break;
             case 'object':
@@ -882,7 +520,7 @@ export class MssqlUi {
                 dt: 'varchar',
                 np: 255,
                 ns: 0,
-                dtxp: '255'
+                dtxp: '255',
               });
               break;
             default:
@@ -908,13 +546,16 @@ export class MssqlUi {
   static isValidDate(value) {
     return new Date(value).getTime() > 0;
   }
+*/
 
   static onCheckboxChangeAU(col) {
     console.log(col);
     // if (1) {
     col.altered = col.altered || 2;
     // }
-
+    if (col.au) {
+      col.cdf = 'GETDATE()';
+    }
     // if (!col.ai) {
     //   col.dtx = 'specificType'
     // } else {
@@ -942,7 +583,7 @@ export class MssqlUi {
   }
 
   static getAbstractType(col): any {
-    switch ((col.dt || col.dt).toLowerCase()) {
+    switch (col.dt?.toLowerCase()) {
       case 'bigint':
       case 'smallint':
       case 'bit':
@@ -1021,7 +662,7 @@ export class MssqlUi {
       case 'date':
         return 'Date';
       case 'datetime':
-        return 'CreateTime';
+        return 'CreatedTime';
       case 'time':
         return 'Time';
       case 'year':
@@ -1042,7 +683,8 @@ export class MssqlUi {
   }
 
   static getDataTypeForUiType(
-    col
+    col: { uidt: UITypes },
+    idType?: IDType
   ): {
     readonly dt: string;
     readonly [key: string]: any;
@@ -1050,17 +692,22 @@ export class MssqlUi {
     const colProp: any = {};
     switch (col.uidt) {
       case 'ID':
-        colProp.dt = 'int';
-        colProp.pk = true;
-        colProp.un = true;
-        colProp.ai = true;
-        colProp.rqd = true;
+        {
+          const isAutoIncId = idType === 'AI';
+          const isAutoGenId = idType === 'AG';
+          colProp.dt = isAutoGenId ? 'varchar' : 'int';
+          colProp.pk = true;
+          colProp.un = isAutoIncId;
+          colProp.ai = isAutoIncId;
+          colProp.rqd = true;
+          colProp.meta = isAutoGenId ? { ag: 'nc' } : undefined;
+        }
         break;
       case 'ForeignKey':
         colProp.dt = 'varchar';
         break;
       case 'SingleLineText':
-        colProp.dt = 'varchar';
+        colProp.dt = 'text';
         break;
       case 'LongText':
         colProp.dt = 'text';
@@ -1071,6 +718,7 @@ export class MssqlUi {
       case 'Checkbox':
         colProp.dt = 'tinyint';
         colProp.dtxp = 1;
+        colProp.cdf = '0';
         break;
       case 'MultiSelect':
         colProp.dt = 'text';
@@ -1081,9 +729,11 @@ export class MssqlUi {
       case 'Collaborator':
         colProp.dt = 'varchar';
         break;
-      case 'Date':
+      case 'GeoData':
         colProp.dt = 'varchar';
-
+        break;
+      case 'Date':
+        colProp.dt = 'date';
         break;
       case 'Year':
         colProp.dt = 'int';
@@ -1096,7 +746,7 @@ export class MssqlUi {
         colProp.validate = {
           func: ['isMobilePhone'],
           args: [''],
-          msg: ['Validation failed : isMobilePhone']
+          msg: ['Validation failed : isMobilePhone'],
         };
         break;
       case 'Email':
@@ -1104,15 +754,15 @@ export class MssqlUi {
         colProp.validate = {
           func: ['isEmail'],
           args: [''],
-          msg: ['Validation failed : isEmail']
+          msg: ['Validation failed : isEmail'],
         };
         break;
       case 'URL':
-        colProp.dt = 'varchar';
+        colProp.dt = 'text';
         colProp.validate = {
           func: ['isURL'],
           args: [''],
-          msg: ['Validation failed : isURL']
+          msg: ['Validation failed : isURL'],
         };
         break;
       case 'Number':
@@ -1126,17 +776,18 @@ export class MssqlUi {
         colProp.validate = {
           func: ['isCurrency'],
           args: [''],
-          msg: ['Validation failed : isCurrency']
+          msg: ['Validation failed : isCurrency'],
         };
         break;
       case 'Percent':
         colProp.dt = 'double';
         break;
       case 'Duration':
-        colProp.dt = 'int';
+        colProp.dt = 'decimal';
         break;
       case 'Rating':
-        colProp.dt = 'float';
+        colProp.dt = 'int';
+        colProp.cdf = '0';
         break;
       case 'Formula':
         colProp.dt = 'varchar';
@@ -1153,7 +804,7 @@ export class MssqlUi {
       case 'DateTime':
         colProp.dt = 'datetimeoffset';
         break;
-      case 'CreateTime':
+      case 'CreatedTime':
         colProp.dt = 'datetime';
         break;
       case 'LastModifiedTime':
@@ -1175,9 +826,16 @@ export class MssqlUi {
     return colProp;
   }
 
-  static getDataTypeListForUiType(col) {
+  static getDataTypeListForUiType(col, idType?: IDType) {
     switch (col.uidt) {
       case 'ID':
+        if (idType === 'AG') {
+          return ['char', 'ntext', 'text', 'varchar', 'nvarchar'];
+        } else if (idType === 'AI') {
+          return ['int', 'bigint', 'bit', 'smallint', 'tinyint'];
+        } else {
+          return dbTypes;
+        }
       case 'ForeignKey':
         return dbTypes;
 
@@ -1185,7 +843,8 @@ export class MssqlUi {
       case 'LongText':
       case 'Attachment':
       case 'Collaborator':
-        return ['char', 'ntext', 'text', 'varchar', 'nvarchar'];
+      case 'GeoData':
+        return ['text', 'varchar', 'nvarchar', 'char', 'ntext'];
 
       case 'JSON':
         return ['text', 'ntext'];
@@ -1210,7 +869,7 @@ export class MssqlUi {
         return ['varchar'];
 
       case 'URL':
-        return ['varchar', 'text'];
+        return ['text', 'varchar'];
 
       case 'Number':
         return [
@@ -1222,7 +881,7 @@ export class MssqlUi {
           'numeric',
           'real',
           'smallint',
-          'tinyint'
+          'tinyint',
         ];
 
       case 'Decimal':
@@ -1238,7 +897,8 @@ export class MssqlUi {
           'numeric',
           'real',
           'smallint',
-          'tinyint'
+          'tinyint',
+          'money',
         ];
 
       case 'Percent':
@@ -1251,7 +911,7 @@ export class MssqlUi {
           'numeric',
           'real',
           'smallint',
-          'tinyint'
+          'tinyint',
         ];
 
       case 'Duration':
@@ -1264,7 +924,7 @@ export class MssqlUi {
           'numeric',
           'real',
           'smallint',
-          'tinyint'
+          'tinyint',
         ];
 
       case 'Rating':
@@ -1277,10 +937,11 @@ export class MssqlUi {
           'numeric',
           'real',
           'smallint',
-          'tinyint'
+          'tinyint',
         ];
 
       case 'Formula':
+      case 'Button':
         return ['text', 'ntext', 'varchar', 'nvarchar'];
 
       case 'Rollup':
@@ -1296,11 +957,11 @@ export class MssqlUi {
         return ['date'];
 
       case 'DateTime':
-      case 'CreateTime':
+      case 'CreatedTime':
       case 'LastModifiedTime':
         return [
           'datetimeoffset',
-          'datetime2'
+          'datetime2',
           // 'datetime'
         ];
 
@@ -1313,37 +974,43 @@ export class MssqlUi {
       case 'Geometry':
         return ['geometry'];
 
-      case 'Button':
       default:
         return dbTypes;
     }
   }
 
   static getUnsupportedFnList() {
-    return [];
+    return [
+      'XOR',
+      'REGEX_MATCH',
+      'REGEX_EXTRACT',
+      'REGEX_REPLACE',
+      'VALUE',
+      'COUNTA',
+      'COUNT',
+      'ROUNDDOWN',
+      'ROUNDUP',
+      'DATESTR',
+    ];
+  }
+
+  static getCurrentDateDefault(_col: Partial<ColumnType>) {
+    return null;
+  }
+
+  static isEqual(dataType1: string, dataType2: string) {
+    if (dataType1 === dataType2) return true;
+
+    const abstractType1 = this.getAbstractType({ dt: dataType1 });
+    const abstractType2 = this.getAbstractType({ dt: dataType2 });
+
+    if (
+      abstractType1 &&
+      abstractType1 === abstractType2 &&
+      ['integer', 'float'].includes(abstractType1)
+    )
+      return true;
+
+    return false;
   }
 }
-
-// module.exports = PgUiHelp;
-/**
- * @copyright Copyright (c) 2021, Xgene Cloud Ltd
- *
- * @author Naveen MR <oof1lab@gmail.com>
- * @author Pranav C Balan <pranavxc@gmail.com>
- *
- * @license GNU AGPL version 3 or any later version
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
- */

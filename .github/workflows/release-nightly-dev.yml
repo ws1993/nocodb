@@ -3,14 +3,6 @@ name: 'NocoDB Nightly Dev Release'
 on:
   # Triggered manually
   workflow_dispatch:
-    inputs:
-      targetEnv:
-        description: "Target Environment"
-        required: true
-        type: choice
-        options:
-          - DEV
-          # - PROD
   schedule:
     # every 6 hours
     - cron: '0 */6 * * *'
@@ -18,8 +10,13 @@ on:
 jobs:
   # enrich tag for nightly auto release
   set-tag:
-    runs-on: 'ubuntu-latest'
+    runs-on: 'ubuntu-22.04'
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+          ref: ${{ github.ref }}
       - name: set-tag
         id: tag-step
         run: |
@@ -28,38 +25,42 @@ jobs:
           CURRENT_TIME=$(date +"%H%M")
           TAG_NAME=${CURRENT_DATE}-${CURRENT_TIME}
           IS_DAILY='Y'
+          # Get current version
+          CURRENT_VERSION=$(cat ./packages/nocodb/package.json | jq -r ".version")
           # Set the tag
           if [[ ${{ github.event_name }} == 'workflow_dispatch' ]]; then
-            TAG_NAME=${TAG_NAME}
             IS_DAILY='N'
           fi
-          echo "::set-output name=NIGHTLY_BUILD_TAG::${TAG_NAME}"
-          echo "::set-output name=IS_DAILY::${IS_DAILY}"
-          # Verify the tag
+          echo "NIGHTLY_BUILD_TAG=${TAG_NAME}" >> $GITHUB_OUTPUT
+          echo "IS_DAILY=${IS_DAILY}" >> $GITHUB_OUTPUT
+          echo "CURRENT_VERSION=${CURRENT_VERSION}" >> $GITHUB_OUTPUT
       - name: verify-tag
         run: |
           echo ${{ steps.tag-step.outputs.NIGHTLY_BUILD_TAG }}
           echo ${{ steps.tag-step.outputs.IS_DAILY }}
+          echo ${{ steps.tag-step.outputs.CURRENT_VERSION }}
     outputs:
       nightly_build_tag: ${{ steps.tag-step.outputs.NIGHTLY_BUILD_TAG }}
       is_daily: ${{ steps.tag-step.outputs.IS_DAILY }}
-  # Build frontend and backend and publish to npm
-  release-npm:
-    needs: set-tag
-    uses: ./.github/workflows/release-npm.yml
-    with:
-      tag: ${{ needs.set-tag.outputs.nightly_build_tag }}
-      targetEnv: ${{ github.event.inputs.targetEnv || 'DEV' }}
-    secrets:
-      NPM_TOKEN: "${{ secrets.NPM_TOKEN }}"
+      current_version: ${{ steps.tag-step.outputs.CURRENT_VERSION }}
+
+  # Build executables and publish to GitHub
+#  release-executables:
+#    needs: [set-tag, release-npm]
+#    uses: ./.github/workflows/release-timely-executables.yml
+#    with:
+#      tag: ${{ needs.set-tag.outputs.current_version }}-${{ needs.set-tag.outputs.nightly_build_tag }}
+#    secrets:
+#      NC_GITHUB_TOKEN: "${{ secrets.NC_GITHUB_TOKEN }}"
 
   # Build docker image and push to docker hub
   release-docker:
-    needs: [set-tag, release-npm]
-    uses: ./.github/workflows/release-docker.yml
+    needs: [set-tag]
+    uses: ./.github/workflows/release-timely-docker.yml
     with:
+      currentVersion: ${{ needs.set-tag.outputs.current_version }}
       tag: ${{ needs.set-tag.outputs.nightly_build_tag }}
-      targetEnv: ${{ github.event.inputs.targetEnv || 'DEV' }}
+      targetEnv: 'DEV'
       isDaily: ${{ needs.set-tag.outputs.is_daily }}
     secrets:
       DOCKERHUB_USERNAME: "${{ secrets.DOCKERHUB_USERNAME }}"

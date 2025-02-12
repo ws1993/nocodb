@@ -6,54 +6,118 @@ on:
     inputs:
       tag:
         description: "Target Tag"
-        required: true
+        required: false
       prev_tag:
         description: "Previous Tag"
-        required: true
+        required: false
 jobs:
-  # Close all issues with target tags 'Fixed' & 'Resolved'
-  close-fixed-issues:
-    uses: ./.github/workflows/release-close-issue.yml
+  # Validate Branch
+  validate-branch:
+    runs-on: ubuntu-22.04
+    steps:
+      - run: |
+          if [[ ${{ github.ref }} != 'refs/heads/master' ]]; then
+            echo "NocoDB Release is only allowed to run on master branch"
+            exit 1
+          fi
+
+  # Process Input
+  process-input:
+    runs-on: ubuntu-22.04
+    needs: validate-branch
+    outputs:
+      target_tag: ${{ steps.process-input.outputs.target_tag }}
+      prev_tag: ${{ steps.process-input.outputs.prev_tag }}
+    steps:
+      - id: process-input
+        name: process-input
+        run: |
+          TARGET_TAG=${{github.event.inputs.tag}}
+          PREV_TAG=${{github.event.inputs.prev_tag}}
+
+          if [[ ${PREV_TAG} == '' ]]; then
+            # fetch the latest version
+            PREV_TAG=$(basename $(curl -fs -o/dev/null -w %{redirect_url} https://github.com/nocodb/nocodb/releases/latest))
+          fi
+
+          if [[ ${TARGET_TAG} == '' ]]; then
+            # bump the version from PREV_TAG
+            TARGET_TAG=$(echo ${PREV_TAG} | awk -F. -v OFS=. '{$NF += 1 ; print}')
+          fi
+
+          echo "TARGET_TAG=${TARGET_TAG}" >> $GITHUB_OUTPUT
+          echo "PREV_TAG=${PREV_TAG}" >> $GITHUB_OUTPUT
+      - name: Verify
+        run : |
+          echo TARGET_TAG: ${{ steps.process-input.outputs.target_tag }}
+          echo PREV_TAG: ${{ steps.process-input.outputs.prev_tag }}
+
+  # Merge develop to master
+  pr-to-master:
+    needs: process-input
+    uses: ./.github/workflows/pr-to-master.yml
     with:
-      issue_label: 'Status: Fixed'
-      version: ${{ github.event.inputs.tag }}
-  close-resolved-issues:
-    needs: close-fixed-issues
-    uses: ./.github/workflows/release-close-issue.yml
-    with:
-      issue_label: 'Status: Resolved'
-      version: ${{ github.event.inputs.tag }}
+      tag: ${{ needs.process-input.outputs.target_tag }}
+      targetEnv: ${{ github.event.inputs.targetEnv || 'PROD' }}
 
   # Build, install, publish frontend and backend to npm
   release-npm:
-    needs: close-resolved-issues
+    needs: [pr-to-master, process-input]
     uses: ./.github/workflows/release-npm.yml
     with:
-      tag: ${{ github.event.inputs.tag }}
+      tag: ${{ needs.process-input.outputs.target_tag }}
       targetEnv: ${{ github.event.inputs.targetEnv || 'PROD' }}
     secrets:
       NPM_TOKEN: "${{ secrets.NPM_TOKEN }}"
 
+  # Create a PR to sync changes back to develop branch from master
+  sync-to-develop:
+    needs: [release-npm, process-input]
+    uses: ./.github/workflows/sync-to-develop.yml
+
   # Draft Release Note
   release-draft-note:
-    needs: release-npm
+    needs: [release-npm, process-input]
     uses: ./.github/workflows/release-draft.yml
     with:
-      tag: ${{ github.event.inputs.tag }}
-      prev_tag: ${{ github.event.inputs.prev_tag }}
+      tag: ${{ needs.process-input.outputs.target_tag }}
+      prev_tag: ${{ needs.process-input.outputs.prev_tag }}
+      tagHeadSHA: 'N'
+    secrets:
+      NC_GITHUB_TOKEN: "${{ secrets.NC_GITHUB_TOKEN }}"
 
   # Build docker image and push to docker hub
   release-docker:
-    needs: release-draft-note
+    needs: [release-draft-note, process-input]
     uses: ./.github/workflows/release-docker.yml
     with:
-      tag: ${{ github.event.inputs.tag }}
+      currentVersion: 'N/A'
+      tag: ${{ needs.process-input.outputs.target_tag }}
       targetEnv: ${{ github.event.inputs.targetEnv || 'PROD' }}
     secrets:
       DOCKERHUB_USERNAME: "${{ secrets.DOCKERHUB_USERNAME }}"
       DOCKERHUB_TOKEN: "${{ secrets.DOCKERHUB_TOKEN }}"
 
-  # Sync changes to develop
-  sync-to-develop:
+  # Build executables and publish to GitHub
+  release-executables:
+    needs: [release-draft-note, process-input]
+    uses: ./.github/workflows/release-executables.yml
+    with:
+      tag: ${{ needs.process-input.outputs.target_tag }}
+    secrets:
+      NC_GITHUB_TOKEN: "${{ secrets.NC_GITHUB_TOKEN }}"
+
+  # Close all issues with target tags 'Status: Ready for Next Release'
+  # close-issues:
+  #   needs: [release-docker, process-input]
+  #   uses: ./.github/workflows/release-close-issue.yml
+  #   with:
+  #     issue_label: '🚀 Status: Ready for Next Release'
+  #     version: ${{ needs.process-input.outputs.target_tag }}
+
+  # Publish Docs
+  publish-docs:
     needs: release-docker
-    uses: ./.github/workflows/sync-to-develop.yml
+    uses: ./.github/workflows/publish-docs.yml
+    secrets:
+      GH_TOKEN: "${{ secrets.GH_TOKEN }}"

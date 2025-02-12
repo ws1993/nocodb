@@ -1,11 +1,14 @@
 const fs = require('fs')
 const path = require('path');
-const { mainModule } = require('process');
-
 const execSync = require('child_process').execSync;
 
 // extract latest version from package.json
 const nocodbSdkPackage = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'packages', 'nocodb-sdk', 'package.json'), 'utf8'))
+
+
+if (process.env.revertSDK === 'true') {
+  nocodbSdkPackage.version = 'workspace:^';
+}
 
 const replacePackageName = (filePath) => {
     return new Promise((resolve, reject) => {
@@ -20,17 +23,33 @@ const replacePackageName = (filePath) => {
     })
 }
 
+const replacePackageVersion = (filePath) => {
+    return new Promise((resolve, reject) => {
+        return fs.readFile(filePath, 'utf8', function (err, data) {
+            if (err) return reject(err)
+            const rgx = new RegExp(`"${nocodbSdkPackage.name}": ".*"`, "g");
+            var result = data.replace(rgx, `"${nocodbSdkPackage.name}": "${nocodbSdkPackage.version}"`);
+            return fs.writeFile(filePath, result, 'utf8', function (err) {
+                if (err) return reject(err)
+                return resolve()
+            });
+        });
+    })
+}
+
 const bumbVersionAndSave = () => {
-    // upgrade nocodb-sdk version in nocodb
-    execSync(`cd packages/nocodb && npm install --save --save-exact ${nocodbSdkPackage.name}@${nocodbSdkPackage.version}`, {});
-    // upgrade nocodb-sdk version in nc-gui
-    execSync(`cd packages/nc-gui && npm install --save --save-exact ${nocodbSdkPackage.name}@${nocodbSdkPackage.version}`, {});
+    // upgrade nocodb-sdk version in nocodb & nc-gui
+    return Promise.all([
+        replacePackageVersion(path.join(__dirname, '..', 'packages', 'nocodb', 'package.json')),
+        replacePackageVersion(path.join(__dirname, '..', 'packages', 'nc-gui', 'package.json')),
+    ])
 }
 
 const dfs = function(dir) {
     var res = [];
     var list = fs.readdirSync(dir);
     list.forEach(function(file) {
+        if (['node_modules', 'build'].includes(file)) return;
         file = dir + '/' + file;
         var stat = fs.statSync(file);
         if (stat && stat.isDirectory()) {
@@ -46,12 +65,13 @@ const dfs = function(dir) {
 }
 
 const searchAndReplace = (target) => {
-    const dirPath = path.resolve(path.join(__dirname, '..', 'packages'))
-    let list = dfs(dirPath)
-    list = [
-        ...list,
+    let list = [
+        ...dfs(path.resolve(path.join(__dirname, '..', 'packages', 'nc-gui'))),
+        ...dfs(path.resolve(path.join(__dirname, '..', 'packages', 'nocodb'))),
+        ...dfs(path.resolve(path.join(__dirname, '..', 'tests', 'playwright'))),
         path.join(__dirname, '..', 'packages', 'nc-gui', 'package.json'),
-        path.join(__dirname, '..', 'packages', 'nocodb', 'package.json')
+        path.join(__dirname, '..', 'packages', 'nocodb', 'package.json'),
+        path.join(__dirname, '..', 'tests', 'playwright', 'package.json'),
     ]
     return Promise.all(list.map(d => {
         return new Promise((resolve, reject) => {
@@ -68,7 +88,7 @@ const searchAndReplace = (target) => {
 }
 
 if (process.env.targetEnv === 'DEV') {
-    // replace nocodb-sdk by nocodb-sdk-daily if it is nightly build
+    // replace nocodb-sdk by nocodb-sdk-daily if it is nightly build / pr build
     searchAndReplace('nocodb-sdk')
     .then(() => {
         bumbVersionAndSave()

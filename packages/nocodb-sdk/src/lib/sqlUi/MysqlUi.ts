@@ -1,4 +1,5 @@
-import UITypes from "../UITypes";
+import UITypes from '../UITypes';
+import { ColumnType, IDType } from '~/lib';
 
 const dbTypes = [
   'int',
@@ -39,15 +40,15 @@ const dbTypes = [
   'multipoint',
   'multilinestring',
   'multipolygon',
-  'json'
+  'json',
 ];
 
 export class MysqlUi {
   static getNewTableColumns(): readonly any[] {
     return [
       {
-       column_name: 'id',
-       title: 'Id',
+        column_name: 'id',
+        title: 'Id',
         dt: 'int',
         dtx: 'integer',
         ct: 'int(11)',
@@ -66,14 +67,37 @@ export class MysqlUi {
         altered: 1,
         uidt: 'ID',
         uip: '',
-        uicn: ''
+        uicn: '',
       },
       {
-       column_name: 'title',
-       title: 'Title',
-        dt: 'varchar',
+        column_name: 'title',
+        title: 'Title',
+        dt: 'TEXT',
         dtx: 'specificType',
-        ct: 'varchar(45)',
+        ct: null,
+        nrqd: true,
+        rqd: false,
+        ck: false,
+        pk: false,
+        un: false,
+        ai: false,
+        cdf: null,
+        clen: null,
+        np: null,
+        ns: null,
+        dtxp: '',
+        dtxs: '',
+        altered: 1,
+        uidt: 'SingleLineText',
+        uip: '',
+        uicn: '',
+      },
+      {
+        column_name: 'created_at',
+        title: 'CreatedAt',
+        dt: 'timestamp',
+        dtx: 'specificType',
+        ct: 'timestamp',
         nrqd: true,
         rqd: false,
         ck: false,
@@ -84,17 +108,64 @@ export class MysqlUi {
         clen: 45,
         np: null,
         ns: null,
+        dtxp: '',
+        dtxs: '',
+        altered: 1,
+        uidt: UITypes.CreatedTime,
+        uip: '',
+        uicn: '',
+        system: true,
+      },
+      {
+        column_name: 'updated_at',
+        title: 'UpdatedAt',
+        dt: 'timestamp',
+        dtx: 'specificType',
+        ct: 'timestamp',
+        nrqd: true,
+        rqd: false,
+        ck: false,
+        pk: false,
+        un: false,
+        ai: false,
+        clen: 45,
+        np: null,
+        ns: null,
+        dtxp: '',
+        dtxs: '',
+        altered: 1,
+        uidt: UITypes.LastModifiedTime,
+        uip: '',
+        uicn: '',
+        system: true,
+      },
+      {
+        column_name: 'created_by',
+        title: 'nc_created_by',
+        dt: 'varchar',
+        dtx: 'specificType',
+        ct: 'varchar(45)',
+        nrqd: true,
+        rqd: false,
+        ck: false,
+        pk: false,
+        un: false,
+        ai: false,
+        clen: 45,
+        np: null,
+        ns: null,
         dtxp: '45',
         dtxs: '',
         altered: 1,
-        uidt: 'SingleLineText',
+        uidt: UITypes.CreatedBy,
         uip: '',
-        uicn: ''
+        uicn: '',
+        system: true,
       },
       {
-       column_name: 'created_at',
-       title: 'CreatedAt',
-        dt: 'timestamp',
+        column_name: 'updated_by',
+        title: 'nc_updated_by',
+        dt: 'varchar',
         dtx: 'specificType',
         ct: 'varchar(45)',
         nrqd: true,
@@ -103,49 +174,50 @@ export class MysqlUi {
         pk: false,
         un: false,
         ai: false,
-        cdf: 'CURRENT_TIMESTAMP',
         clen: 45,
         np: null,
         ns: null,
-        dtxp: '',
+        dtxp: '45',
         dtxs: '',
         altered: 1,
-        uidt: UITypes.DateTime,
+        uidt: UITypes.LastModifiedBy,
         uip: '',
-        uicn: ''
+        uicn: '',
+        system: true,
       },
       {
-       column_name: 'updated_at',
-       title: 'UpdatedAt',
-        dt: 'timestamp',
-        dtx: 'specificType',
-        ct: 'varchar(45)',
+        column_name: 'nc_order',
+        title: 'nc_order',
+        dt: 'decimal',
+        dtx: 'decimal',
+        ct: 'decimal(40,20)',
         nrqd: true,
         rqd: false,
         ck: false,
         pk: false,
         un: false,
         ai: false,
-        cdf: 'CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP',
-        clen: 45,
-        np: null,
-        ns: null,
-        dtxp: '',
+        cdf: null,
+        clen: null,
+        np: 40,
+        ns: 20,
+        dtxp: '40,20',
         dtxs: '',
         altered: 1,
-        uidt: UITypes.DateTime,
+        uidt: UITypes.Order,
         uip: '',
-        uicn: ''
-      }
+        uicn: '',
+        system: true,
+      },
     ];
   }
 
   static getNewColumn(suffix) {
     return {
-     column_name: 'title' + suffix,
-      dt: 'int',
+      column_name: 'title' + suffix,
+      dt: 'TEXT',
       dtx: 'specificType',
-      ct: 'integer(11)',
+      ct: null,
       nrqd: true,
       rqd: false,
       ck: false,
@@ -153,16 +225,15 @@ export class MysqlUi {
       un: false,
       ai: false,
       cdf: null,
-      clen: 45,
+      clen: null,
       np: null,
       ns: null,
-      // data_type_x_specific: ' ',
-      dtxp: '11',
-      dtxs: ' ',
+      dtxp: '',
+      dtxs: '',
       altered: 1,
-      uidt: 'Number',
+      uidt: 'SingleLineText',
       uip: '',
-      uicn: ''
+      uicn: '',
     };
   }
 
@@ -206,7 +277,7 @@ export class MysqlUi {
 
       case 'datetime':
       case 'timestamp':
-        return 6;
+        return '';
 
       case 'time':
         return '';
@@ -254,10 +325,10 @@ export class MysqlUi {
         return '';
 
       case 'enum':
-        return "'a','b'";
+        return '';
 
       case 'set':
-        return "'a','b'";
+        return '';
 
       case 'geometry':
         return '';
@@ -583,21 +654,16 @@ export class MysqlUi {
 
   static colPropUNDisabled(col) {
     // console.log(col);
-    if (
+    return !(
       col.dt === 'int' ||
       col.dt === 'tinyint' ||
       col.dt === 'smallint' ||
       col.dt === 'mediumint' ||
       col.dt === 'bigint'
-    ) {
-      return false;
-    } else {
-      return true;
-    }
+    );
   }
 
   static onCheckboxChangeAI(col) {
-    console.log(col);
     if (
       col.dt === 'int' ||
       col.dt === 'bigint' ||
@@ -658,15 +724,18 @@ export class MysqlUi {
   static columnEditable(colObj) {
     return colObj.tn !== '_evolutions' || colObj.tn !== 'nc_evolutions';
   }
+  /*
 
   static extractFunctionName(query) {
-    const reg = /^\s*CREATE\s+.*?(?:OR\s+REPLACE\s*)?\s*FUNCTION\s+(?:`?[\w\d_]+`?\.)?`?([\w_\d]+)`?/i;
+    const reg =
+      /^\s*CREATE\s+.*?(?:OR\s+REPLACE\s*)?\s*FUNCTION\s+(?:`?[\w\d_]+`?\.)?`?([\w_\d]+)`?/i;
     const match = query.match(reg);
     return match && match[1];
   }
 
   static extractProcedureName(query) {
-    const reg = /^\s*CREATE.*?\s+(?:OR\s+REPLACE\s*)?\s*PROCEDURE\s+(?:[\w\d_]+\.)?([\w_\d]+)/i;
+    const reg =
+      /^\s*CREATE.*?\s+(?:OR\s+REPLACE\s*)?\s*PROCEDURE\s+(?:[\w\d_]+\.)?([\w_\d]+)/i;
     const match = query.match(reg);
     return match && match[1];
   }
@@ -694,18 +763,18 @@ export class MysqlUi {
   }
 
   static splitQueries(query) {
-    /***
+    /!***
      * we are splitting based on semicolon
      * there are mechanism to escape semicolon within single/double quotes(string)
-     */
+     *!/
     return query.match(/\b("[^"]*;[^"]*"|'[^']*;[^']*'|[^;])*;/g);
   }
 
-  /**
+  /!**
    * if sql statement is SELECT - it limits to a number
    * @param args
    * @returns {string|*}
-   */
+   *!/
   static sanitiseQuery(args) {
     let q = args.query.trim().split(';');
 
@@ -732,7 +801,7 @@ export class MysqlUi {
           const column = {
             dp: null,
             tn,
-           column_name: keys[i],
+            column_name: keys[i],
             cno: keys[i],
             np: 10,
             ns: 0,
@@ -751,7 +820,7 @@ export class MysqlUi {
             dtx: 'specificType',
             dtxp: null,
             dtxs: 0,
-            altered: 1
+            altered: 1,
           };
 
           switch (typeof json[keys[i]]) {
@@ -759,13 +828,13 @@ export class MysqlUi {
               if (Number.isInteger(json[keys[i]])) {
                 if (MysqlUi.isValidTimestamp(keys[i], json[keys[i]])) {
                   Object.assign(column, {
-                    dt: 'timestamp'
+                    dt: 'timestamp',
                   });
                 } else {
                   Object.assign(column, {
                     dt: 'int',
                     np: 10,
-                    ns: 0
+                    ns: 0,
                   });
                 }
               } else {
@@ -774,25 +843,25 @@ export class MysqlUi {
                   np: 10,
                   ns: 2,
                   dtxp: '11',
-                  dtxs: 2
+                  dtxs: 2,
                 });
               }
               break;
             case 'string':
               if (MysqlUi.isValidDate(json[keys[i]])) {
                 Object.assign(column, {
-                  dt: 'datetime'
+                  dt: 'datetime',
                 });
               } else if (json[keys[i]].length <= 255) {
                 Object.assign(column, {
                   dt: 'varchar',
                   np: 255,
                   ns: 0,
-                  dtxp: '255'
+                  dtxp: '255',
                 });
               } else {
                 Object.assign(column, {
-                  dt: 'text'
+                  dt: 'text',
                 });
               }
               break;
@@ -800,14 +869,14 @@ export class MysqlUi {
               Object.assign(column, {
                 dt: 'boolean',
                 np: 3,
-                ns: 0
+                ns: 0,
               });
               break;
             case 'object':
               Object.assign(column, {
                 dt: 'json',
                 np: 3,
-                ns: 0
+                ns: 0,
               });
               break;
             default:
@@ -833,6 +902,7 @@ export class MysqlUi {
   static isValidDate(value) {
     return new Date(value).getTime() > 0;
   }
+*/
 
   static colPropAuDisabled(_col) {
     return true;
@@ -870,7 +940,7 @@ export class MysqlUi {
   }
 
   static getAbstractType(col): any {
-    switch (col.dt.toLowerCase()) {
+    switch (col.dt?.toLowerCase()) {
       case 'int':
       case 'smallint':
       case 'mediumint':
@@ -942,21 +1012,29 @@ export class MysqlUi {
     }
   }
 
-  static getDataTypeForUiType(col) {
+  static getDataTypeForUiType(
+    col: { uidt: UITypes; dtxp?: string; colOptions?: any },
+    idType?: IDType
+  ) {
     const colProp: any = {};
     switch (col.uidt) {
       case 'ID':
-        colProp.dt = 'int';
-        colProp.pk = true;
-        colProp.un = true;
-        colProp.ai = true;
-        colProp.rqd = true;
+        {
+          const isAutoIncId = idType === 'AI';
+          const isAutoGenId = idType === 'AG';
+          colProp.dt = isAutoGenId ? 'varchar' : 'int';
+          colProp.pk = true;
+          colProp.un = isAutoIncId;
+          colProp.ai = isAutoIncId;
+          colProp.rqd = true;
+          colProp.meta = isAutoGenId ? { ag: 'nc' } : undefined;
+        }
         break;
       case 'ForeignKey':
         colProp.dt = 'varchar';
         break;
       case 'SingleLineText':
-        colProp.dt = 'varchar';
+        colProp.dt = 'text';
         break;
       case 'LongText':
         colProp.dt = 'text';
@@ -964,12 +1042,22 @@ export class MysqlUi {
       case 'Attachment':
         colProp.dt = 'text';
         break;
+      case 'GeoData':
+        colProp.dt = 'text';
+        break;
       case 'Checkbox':
         colProp.dt = 'tinyint';
         colProp.dtxp = 1;
+        colProp.cdf = '0';
         break;
       case 'MultiSelect':
         colProp.dt = 'set';
+        if (
+          col.colOptions?.options.length > 64 ||
+          col.dtxp?.toString?.()?.split(',').length > 64
+        ) {
+          colProp.dt = 'text';
+        }
         break;
       case 'SingleSelect':
         colProp.dt = 'enum';
@@ -978,7 +1066,7 @@ export class MysqlUi {
         colProp.dt = 'varchar';
         break;
       case 'Date':
-        colProp.dt = 'varchar';
+        colProp.dt = 'date';
 
         break;
       case 'Year':
@@ -992,7 +1080,7 @@ export class MysqlUi {
         colProp.validate = {
           func: ['isMobilePhone'],
           args: [''],
-          msg: ['Validation failed : isMobilePhone ({cn})']
+          msg: ['Validation failed : isMobilePhone ({cn})'],
         };
         break;
       case 'Email':
@@ -1000,15 +1088,15 @@ export class MysqlUi {
         colProp.validate = {
           func: ['isEmail'],
           args: [''],
-          msg: ['Validation failed : isEmail ({cn})']
+          msg: ['Validation failed : isEmail ({cn})'],
         };
         break;
       case 'URL':
-        colProp.dt = 'varchar';
+        colProp.dt = 'text';
         colProp.validate = {
           func: ['isURL'],
           args: [''],
-          msg: ['Validation failed : isURL ({cn})']
+          msg: ['Validation failed : isURL ({cn})'],
         };
         break;
       case 'Number':
@@ -1022,17 +1110,18 @@ export class MysqlUi {
         colProp.validate = {
           func: ['isCurrency'],
           args: [''],
-          msg: ['Validation failed : isCurrency']
+          msg: ['Validation failed : isCurrency'],
         };
         break;
       case 'Percent':
         colProp.dt = 'double';
         break;
       case 'Duration':
-        colProp.dt = 'int';
+        colProp.dt = 'decimal';
         break;
       case 'Rating':
-        colProp.dt = 'float';
+        colProp.dt = 'int';
+        colProp.cdf = '0';
         break;
       case 'Formula':
         colProp.dt = 'varchar';
@@ -1049,11 +1138,11 @@ export class MysqlUi {
       case 'DateTime':
         colProp.dt = 'datetime';
         break;
-      case 'CreateTime':
-        colProp.dt = 'datetime';
+      case 'CreatedTime':
+        colProp.dt = 'timestamp';
         break;
       case 'LastModifiedTime':
-        colProp.dt = 'datetime';
+        colProp.dt = 'timestamp';
         break;
       case 'AutoNumber':
         colProp.dt = 'int';
@@ -1067,6 +1156,9 @@ export class MysqlUi {
       case 'JSON':
         colProp.dt = 'json';
         break;
+      case 'Order':
+        colProp.dt = 'decimal';
+        break;
       default:
         colProp.dt = 'varchar';
         break;
@@ -1074,23 +1166,31 @@ export class MysqlUi {
     return colProp;
   }
 
-  static getDataTypeListForUiType(col) {
+  static getDataTypeListForUiType(col, idType?: IDType) {
     switch (col.uidt) {
       case 'ID':
+        if (idType === 'AG') {
+          return ['varchar', 'char', 'nchar'];
+        } else if (idType === 'AI') {
+          return ['int', 'smallint', 'mediumint', 'bigint', 'bit', 'serial'];
+        } else {
+          return dbTypes;
+        }
       case 'ForeignKey':
         return dbTypes;
 
       case 'SingleLineText':
       case 'LongText':
       case 'Collaborator':
+      case 'GeoData':
         return [
-          'char',
-          'varchar',
-          'nchar',
           'text',
-          'tinytext',
           'mediumtext',
-          'longtext'
+          'longtext',
+          'varchar',
+          'char',
+          'nchar',
+          'tinytext',
         ];
 
       case 'Attachment':
@@ -1102,7 +1202,7 @@ export class MysqlUi {
           'text',
           'tinytext',
           'mediumtext',
-          'longtext'
+          'longtext',
         ];
 
       case 'JSON':
@@ -1117,7 +1217,7 @@ export class MysqlUi {
           'bit',
           'boolean',
           'serial',
-          'tinyint'
+          'tinyint',
         ];
 
       case 'MultiSelect':
@@ -1149,7 +1249,7 @@ export class MysqlUi {
           'float',
           'decimal',
           'double',
-          'serial'
+          'serial',
         ];
 
       case 'Decimal':
@@ -1165,7 +1265,7 @@ export class MysqlUi {
           'smallint',
           'mediumint',
           'bigint',
-          'bit'
+          'bit',
         ];
 
       case 'Percent':
@@ -1178,7 +1278,7 @@ export class MysqlUi {
           'smallint',
           'mediumint',
           'bigint',
-          'bit'
+          'bit',
         ];
 
       case 'Duration':
@@ -1191,7 +1291,7 @@ export class MysqlUi {
           'smallint',
           'mediumint',
           'bigint',
-          'bit'
+          'bit',
         ];
 
       case 'Rating':
@@ -1204,10 +1304,11 @@ export class MysqlUi {
           'smallint',
           'mediumint',
           'bigint',
-          'bit'
+          'bit',
         ];
 
       case 'Formula':
+      case 'Button':
         return [
           'char',
           'varchar',
@@ -1215,7 +1316,7 @@ export class MysqlUi {
           'text',
           'tinytext',
           'mediumtext',
-          'longtext'
+          'longtext',
         ];
 
       case 'Rollup':
@@ -1231,7 +1332,7 @@ export class MysqlUi {
         return ['date', 'datetime', 'timestamp', 'varchar'];
 
       case 'DateTime':
-      case 'CreateTime':
+      case 'CreatedTime':
       case 'LastModifiedTime':
         return ['datetime', 'timestamp', 'varchar'];
 
@@ -1249,40 +1350,49 @@ export class MysqlUi {
           'polygon',
           'multipoint',
           'multilinestring',
-          'multipolygon'
+          'multipolygon',
         ];
 
-      case 'Button':
       default:
         return dbTypes;
     }
   }
 
   static getUnsupportedFnList() {
-    return [];
+    return ['COUNTA', 'COUNT', 'DATESTR'];
+  }
+
+  static getCurrentDateDefault(col: Partial<ColumnType>) {
+    // if database datatype timestamp or datetime then return CURRENT_TIMESTAMP
+    if (
+      col.dt &&
+      (col.dt.toLowerCase() === 'timestamp' ||
+        col.dt.toLowerCase() === 'datetime')
+    ) {
+      return 'CURRENT_TIMESTAMP';
+    }
+
+    // database type is not defined(means column create) and ui datatype is datetime then return CURRENT_TIMESTAMP
+    // in this scenario it will create column with datatype timestamp/datetime
+    if (!col.dt && col.uidt === UITypes.DateTime) {
+      return 'CURRENT_TIMESTAMP';
+    }
+    return null;
+  }
+
+  static isEqual(dataType1: string, dataType2: string) {
+    if (dataType1 === dataType2) return true;
+
+    const abstractType1 = this.getAbstractType({ dt: dataType1 });
+    const abstractType2 = this.getAbstractType({ dt: dataType2 });
+
+    if (
+      abstractType1 &&
+      abstractType1 === abstractType2 &&
+      ['integer', 'float'].includes(abstractType1)
+    )
+      return true;
+
+    return false;
   }
 }
-
-// module.exports = MysqlUiHelp;
-/**
- * @copyright Copyright (c) 2021, Xgene Cloud Ltd
- *
- * @author Naveen MR <oof1lab@gmail.com>
- * @author Pranav C Balan <pranavxc@gmail.com>
- *
- * @license GNU AGPL version 3 or any later version
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
- */

@@ -1,4 +1,6 @@
-import UITypes from "../UITypes";
+import UITypes from '../UITypes';
+import { IDType } from './index';
+import { ColumnType } from '~/lib';
 
 const dbTypes = [
   'int',
@@ -22,15 +24,15 @@ const dbTypes = [
   'datetime',
   'text',
   'varchar',
-  'timestamp'
+  'timestamp',
 ];
 
 export class SqliteUi {
   static getNewTableColumns() {
     return [
       {
-       column_name: 'id',
-       title: 'Id',
+        column_name: 'id',
+        title: 'Id',
         dt: 'integer',
         dtx: 'integer',
         ct: 'int(11)',
@@ -49,11 +51,11 @@ export class SqliteUi {
         altered: 1,
         uidt: 'ID',
         uip: '',
-        uicn: ''
+        uicn: '',
       },
       {
-       column_name: 'title',
-       title: 'Title',
+        column_name: 'title',
+        title: 'Title',
         dt: 'varchar',
         dtx: 'specificType',
         ct: 'varchar',
@@ -72,12 +74,58 @@ export class SqliteUi {
         altered: 1,
         uidt: 'SingleLineText',
         uip: '',
-        uicn: ''
+        uicn: '',
       },
       {
-       column_name: 'created_at',
-       title: 'CreatedAt',
+        column_name: 'created_at',
+        title: 'CreatedAt',
         dt: 'datetime',
+        dtx: 'specificType',
+        ct: 'datetime',
+        nrqd: true,
+        rqd: false,
+        ck: false,
+        pk: false,
+        un: false,
+        ai: false,
+        clen: 45,
+        np: null,
+        ns: null,
+        dtxp: '',
+        dtxs: '',
+        altered: 1,
+        uidt: UITypes.CreatedTime,
+        uip: '',
+        uicn: '',
+        system: true,
+      },
+      {
+        column_name: 'updated_at',
+        title: 'UpdatedAt',
+        dt: 'datetime',
+        dtx: 'specificType',
+        ct: 'datetime',
+        nrqd: true,
+        rqd: false,
+        ck: false,
+        pk: false,
+        un: false,
+        ai: false,
+        clen: 45,
+        np: null,
+        ns: null,
+        dtxp: '',
+        dtxs: '',
+        altered: 1,
+        uidt: UITypes.LastModifiedTime,
+        uip: '',
+        uicn: '',
+        system: true,
+      },
+      {
+        column_name: 'created_by',
+        title: 'nc_created_by',
+        dt: 'varchar',
         dtx: 'specificType',
         ct: 'varchar',
         nrqd: true,
@@ -86,21 +134,21 @@ export class SqliteUi {
         pk: false,
         un: false,
         ai: false,
-        cdf: 'CURRENT_TIMESTAMP',
         clen: 45,
         np: null,
         ns: null,
         dtxp: '',
         dtxs: '',
         altered: 1,
-        uidt: UITypes.DateTime,
+        uidt: UITypes.CreatedBy,
         uip: '',
-        uicn: ''
+        uicn: '',
+        system: true,
       },
       {
-       column_name: 'updated_at',
-       title: 'UpdatedAt',
-        dt: 'datetime',
+        column_name: 'updated_by',
+        title: 'nc_updated_by',
+        dt: 'varchar',
         dtx: 'specificType',
         ct: 'varchar',
         nrqd: true,
@@ -109,26 +157,49 @@ export class SqliteUi {
         pk: false,
         un: false,
         ai: false,
-        cdf: 'CURRENT_TIMESTAMP',
         clen: 45,
         np: null,
         ns: null,
         dtxp: '',
         dtxs: '',
         altered: 1,
-        uidt: UITypes.DateTime,
+        uidt: UITypes.LastModifiedBy,
         uip: '',
-        uicn: ''
-      }
+        uicn: '',
+        system: true,
+      },
+      {
+        column_name: 'nc_order',
+        title: 'nc_order',
+        dt: 'real',
+        dtx: 'specificType',
+        ct: 'real',
+        nrqd: true,
+        rqd: false,
+        ck: false,
+        pk: false,
+        un: false,
+        ai: false,
+        clen: null,
+        np: null,
+        ns: null,
+        dtxp: '',
+        dtxs: '',
+        altered: 1,
+        uidt: UITypes.Order,
+        uip: '',
+        uicn: '',
+        system: true,
+      },
     ];
   }
 
   static getNewColumn(suffix) {
     return {
-     column_name: 'title' + suffix,
-      dt: 'integer',
+      column_name: 'title' + suffix,
+      dt: 'varchar',
       dtx: 'specificType',
-      ct: 'integer(11)',
+      ct: 'varchar',
       nrqd: true,
       rqd: false,
       ck: false,
@@ -139,242 +210,16 @@ export class SqliteUi {
       clen: 45,
       np: null,
       ns: null,
-      // data_type_x_specific: ' ',
       dtxp: '',
-      dtxs: ' ',
+      dtxs: '',
       altered: 1,
-      uidt: 'Number',
+      uidt: 'SingleLineText',
       uip: '',
-      uicn: ''
+      uicn: '',
     };
   }
 
-  // static getDefaultLengthForDatatype(type) {
-  //   switch (type) {
-  //     case "int":
-  //       return 11;
-  //       break;
-  //     case "tinyint":
-  //       return 1;
-  //       break;
-  //     case "smallint":
-  //       return 5;
-  //       break;
-  //
-  //     case "mediumint":
-  //       return 9;
-  //       break;
-  //     case "bigint":
-  //       return 20;
-  //       break;
-  //     case "bit":
-  //       return 64;
-  //       break;
-  //     case "boolean":
-  //       return '';
-  //       break;
-  //     case "float":
-  //       return 12;
-  //       break;
-  //     case "decimal":
-  //       return 10;
-  //       break;
-  //     case "double":
-  //       return 22;
-  //       break;
-  //     case "serial":
-  //       return 20;
-  //       break;
-  //     case "date":
-  //       return '';
-  //       break;
-  //     case "datetime":
-  //     case "timestamp":
-  //       return 6;
-  //       break;
-  //     case "time":
-  //       return '';
-  //       break;
-  //     case "year":
-  //       return '';
-  //       break;
-  //     case "char":
-  //       return 255;
-  //       break;
-  //     case "varchar":
-  //       return 45;
-  //       break;
-  //     case "nchar":
-  //       return 255;
-  //       break;
-  //     case "text":
-  //       return '';
-  //       break;
-  //     case "tinytext":
-  //       return '';
-  //       break;
-  //     case "mediumtext":
-  //       return '';
-  //       break;
-  //     case "longtext":
-  //       return ''
-  //       break;
-  //     case "binary":
-  //       return 255;
-  //       break;
-  //     case "varbinary":
-  //       return 65500;
-  //       break;
-  //     case "blob":
-  //       return '';
-  //       break;
-  //     case "tinyblob":
-  //       return '';
-  //       break;
-  //     case "mediumblob":
-  //       return '';
-  //       break;
-  //     case "longblob":
-  //       return '';
-  //       break;
-  //     case "enum":
-  //       return '\'a\',\'b\'';
-  //       break;
-  //     case "set":
-  //       return '\'a\',\'b\'';
-  //       break;
-  //     case "geometry":
-  //       return '';
-  //     case "point":
-  //       return '';
-  //     case "linestring":
-  //       return '';
-  //     case "polygon":
-  //       return '';
-  //     case "multipoint":
-  //       return '';
-  //     case "multilinestring":
-  //       return '';
-  //     case "multipolygon":
-  //       return '';
-  //     case "json":
-  //       return ''
-  //       break;
-  //
-  //   }
-  //
-  // }
-
-  static getDefaultLengthForDatatype(type) {
-    switch (type) {
-      case 'int':
-        return '';
-
-      case 'tinyint':
-        return '';
-
-      case 'smallint':
-        return '';
-
-      case 'mediumint':
-        return '';
-
-      case 'bigint':
-        return '';
-
-      case 'bit':
-        return '';
-
-      case 'boolean':
-        return '';
-
-      case 'float':
-        return '';
-
-      case 'decimal':
-        return '';
-
-      case 'double':
-        return '';
-
-      case 'serial':
-        return '';
-
-      case 'date':
-        return '';
-
-      case 'datetime':
-      case 'timestamp':
-        return '';
-
-      case 'time':
-        return '';
-
-      case 'year':
-        return '';
-
-      case 'char':
-        return '';
-
-      case 'varchar':
-        return '';
-
-      case 'nchar':
-        return '';
-
-      case 'text':
-        return '';
-
-      case 'tinytext':
-        return '';
-
-      case 'mediumtext':
-        return '';
-
-      case 'longtext':
-        return '';
-
-      case 'binary':
-        return '';
-
-      case 'varbinary':
-        return '';
-
-      case 'blob':
-        return '';
-
-      case 'tinyblob':
-        return '';
-
-      case 'mediumblob':
-        return '';
-
-      case 'longblob':
-        return '';
-
-      case 'enum':
-        return '';
-
-      case 'set':
-        return '';
-
-      case 'geometry':
-        return '';
-      case 'point':
-        return '';
-      case 'linestring':
-        return '';
-      case 'polygon':
-        return '';
-      case 'multipoint':
-        return '';
-      case 'multilinestring':
-        return '';
-      case 'multipolygon':
-        return '';
-      case 'json':
-        return '';
-    }
+  static getDefaultLengthForDatatype(_type) {
     return '';
   }
 
@@ -413,17 +258,9 @@ export class SqliteUi {
   static getDefaultScaleForDatatype(type): any {
     switch (type) {
       case 'integer':
-        return ' ';
-
       case 'text':
-        return ' ';
-
       case 'numeric':
-        return ' ';
-
       case 'real':
-        return ' ';
-
       case 'blob':
         return ' ';
     }
@@ -444,17 +281,7 @@ export class SqliteUi {
   }
 
   static colPropUNDisabled(_col) {
-    // console.log(col);
     return true;
-    // if (col.dt === 'int' ||
-    //   col.dt === 'tinyint' ||
-    //   col.dt === 'smallint' ||
-    //   col.dt === 'mediumint' ||
-    //   col.dt === 'bigint') {
-    //   return false;
-    // } else {
-    //   return true;
-    // }
   }
 
   static onCheckboxChangeAI(col) {
@@ -467,12 +294,6 @@ export class SqliteUi {
     ) {
       col.altered = col.altered || 2;
     }
-
-    // if (!col.ai) {
-    //   col.dtx = 'specificType'
-    // } else {
-    //   col.dtx = ''
-    // }
   }
 
   static showScale(_columnObj) {
@@ -498,23 +319,24 @@ export class SqliteUi {
     }
   }
 
-  static extractFunctionName(query) {
-    const reg = /^\s*CREATE\s+(?:OR\s+REPLACE\s*)?\s*FUNCTION\s+(?:[\w\d_]+\.)?([\w_\d]+)/i;
+  /*static extractFunctionName(query) {
+    const reg =
+      /^\s*CREATE\s+(?:OR\s+REPLACE\s*)?\s*FUNCTION\s+(?:[\w\d_]+\.)?([\w_\d]+)/i;
     const match = query.match(reg);
     return match && match[1];
   }
 
   static extractProcedureName(query) {
-    const reg = /^\s*CREATE\s+(?:OR\s+REPLACE\s*)?\s*PROCEDURE\s+(?:[\w\d_]+\.)?([\w_\d]+)/i;
+    const reg =
+      /^\s*CREATE\s+(?:OR\s+REPLACE\s*)?\s*PROCEDURE\s+(?:[\w\d_]+\.)?([\w_\d]+)/i;
     const match = query.match(reg);
     return match && match[1];
-  }
-
+  }*/
   static columnEditable(_colObj) {
     return true; // colObj.altered === 1;
   }
 
-  static handleRawOutput(result, headers) {
+  /*static handleRawOutput(result, headers) {
     console.log(result);
     if (Array.isArray(result) && result[0]) {
       const keys = Object.keys(result[0]);
@@ -528,18 +350,18 @@ export class SqliteUi {
   }
 
   static splitQueries(query) {
-    /***
+    /!***
      * we are splitting based on semicolon
      * there are mechanism to escape semicolon within single/double quotes(string)
-     */
+     *!/
     return query.match(/\b("[^"]*;[^"]*"|'[^']*;[^']*'|[^;])*;/g);
   }
 
-  /**
+  /!**
    * if sql statement is SELECT - it limits to a number
    * @param args
    * @returns {string|*}
-   */
+   *!/
   sanitiseQuery(args) {
     let q = args.query.trim().split(';');
 
@@ -566,7 +388,7 @@ export class SqliteUi {
           const column = {
             dp: null,
             tn,
-           column_name: keys[i],
+            column_name: keys[i],
             cno: keys[i],
             np: null,
             ns: null,
@@ -585,7 +407,7 @@ export class SqliteUi {
             dtx: 'specificType',
             dtxp: null,
             dtxs: 0,
-            altered: 1
+            altered: 1,
           };
 
           switch (typeof json[keys[i]]) {
@@ -593,16 +415,16 @@ export class SqliteUi {
               if (Number.isInteger(json[keys[i]])) {
                 if (SqliteUi.isValidTimestamp(keys[i], json[keys[i]])) {
                   Object.assign(column, {
-                    dt: 'timestamp'
+                    dt: 'timestamp',
                   });
                 } else {
                   Object.assign(column, {
-                    dt: 'integer'
+                    dt: 'integer',
                   });
                 }
               } else {
                 Object.assign(column, {
-                  dt: 'real'
+                  dt: 'real',
                 });
               }
               break;
@@ -614,24 +436,24 @@ export class SqliteUi {
               // } else
               if (json[keys[i]].length <= 255) {
                 Object.assign(column, {
-                  dt: 'varchar'
+                  dt: 'varchar',
                 });
               } else {
                 Object.assign(column, {
-                  dt: 'text'
+                  dt: 'text',
                 });
               }
               break;
             case 'boolean':
               Object.assign(column, {
-                dt: 'integer'
+                dt: 'integer',
               });
               break;
             case 'object':
               Object.assign(column, {
                 dt: 'text',
                 np: null,
-                dtxp: null
+                dtxp: null,
               });
               break;
             default:
@@ -656,7 +478,7 @@ export class SqliteUi {
 
   static isValidDate(value) {
     return new Date(value).getTime() > 0;
-  }
+  }*/
 
   static onCheckboxChangeAU(col) {
     console.log(col);
@@ -689,7 +511,7 @@ export class SqliteUi {
   }
 
   static getAbstractType(col): any {
-    switch ((col.dt || col.dt).toLowerCase()) {
+    switch (col.dt?.replace(/\(\d+\)$/).toLowerCase()) {
       case 'date':
         return 'date';
       case 'datetime':
@@ -712,6 +534,7 @@ export class SqliteUi {
       case 'double':
       case 'double precision':
       case 'float':
+      case 'decimal':
       case 'numeric':
         return 'float';
 
@@ -737,7 +560,7 @@ export class SqliteUi {
       case 'date':
         return 'Date';
       case 'datetime':
-        return 'CreateTime';
+        return 'CreatedTime';
       case 'time':
         return 'Time';
       case 'year':
@@ -757,15 +580,20 @@ export class SqliteUi {
     }
   }
 
-  static getDataTypeForUiType(col) {
+  static getDataTypeForUiType(col: { uidt: UITypes }, idType?: IDType) {
     const colProp: any = {};
     switch (col.uidt) {
       case 'ID':
-        colProp.dt = 'integer';
-        colProp.pk = true;
-        colProp.un = true;
-        colProp.ai = true;
-        colProp.rqd = true;
+        {
+          const isAutoIncId = idType === 'AI';
+          const isAutoGenId = idType === 'AG';
+          colProp.dt = isAutoGenId ? 'varchar' : 'integer';
+          colProp.pk = true;
+          colProp.un = isAutoIncId;
+          colProp.ai = isAutoIncId;
+          colProp.rqd = true;
+          colProp.meta = isAutoGenId ? { ag: 'nc' } : undefined;
+        }
         break;
       case 'ForeignKey':
         colProp.dt = 'varchar';
@@ -779,10 +607,12 @@ export class SqliteUi {
       case 'Attachment':
         colProp.dt = 'text';
         break;
+      case 'GeoData':
+        colProp.dt = 'text';
+        break;
       case 'Checkbox':
-        // colProp.dt = 'tinyint';
-        // colProp.dtxp = 1;
         colProp.dt = 'boolean';
+        colProp.cdf = '0';
         break;
       case 'MultiSelect':
         colProp.dt = 'text';
@@ -808,7 +638,7 @@ export class SqliteUi {
         colProp.validate = {
           func: ['isMobilePhone'],
           args: [''],
-          msg: ['Validation failed : isMobilePhone']
+          msg: ['Validation failed : isMobilePhone'],
         };
         break;
       case 'Email':
@@ -816,7 +646,7 @@ export class SqliteUi {
         colProp.validate = {
           func: ['isEmail'],
           args: [''],
-          msg: ['Validation failed : isEmail']
+          msg: ['Validation failed : isEmail'],
         };
         break;
       case 'URL':
@@ -824,7 +654,7 @@ export class SqliteUi {
         colProp.validate = {
           func: ['isURL'],
           args: [''],
-          msg: ['Validation failed : isURL']
+          msg: ['Validation failed : isURL'],
         };
         break;
       case 'Number':
@@ -838,17 +668,18 @@ export class SqliteUi {
         colProp.validate = {
           func: ['isCurrency'],
           args: [''],
-          msg: ['Validation failed : isCurrency']
+          msg: ['Validation failed : isCurrency'],
         };
         break;
       case 'Percent':
         colProp.dt = 'double';
         break;
       case 'Duration':
-        colProp.dt = 'integer';
+        colProp.dt = 'decimal';
         break;
       case 'Rating':
-        colProp.dt = 'float';
+        colProp.dt = 'integer';
+        colProp.cdf = '0';
         break;
       case 'Formula':
         colProp.dt = 'varchar';
@@ -865,7 +696,7 @@ export class SqliteUi {
       case 'DateTime':
         colProp.dt = 'datetime';
         break;
-      case 'CreateTime':
+      case 'CreatedTime':
         colProp.dt = 'datetime';
         break;
       case 'LastModifiedTime':
@@ -883,6 +714,9 @@ export class SqliteUi {
       case 'JSON':
         colProp.dt = 'text';
         break;
+      case 'Order':
+        colProp.dt = 'real';
+        break;
       default:
         colProp.dt = 'varchar';
         break;
@@ -890,16 +724,32 @@ export class SqliteUi {
     return colProp;
   }
 
-  static getDataTypeListForUiType(col) {
+  static getDataTypeListForUiType(col: { uidt: UITypes }, idType?: IDType) {
     switch (col.uidt) {
       case 'ID':
+        if (idType === 'AG') {
+          return ['character', 'text', 'varchar'];
+        } else if (idType === 'AI') {
+          return [
+            'int',
+            'integer',
+            'tinyint',
+            'smallint',
+            'mediumint',
+            'bigint',
+            'int2',
+            'int8',
+          ];
+        } else {
+          return dbTypes;
+        }
       case 'ForeignKey':
         return dbTypes;
-
       case 'SingleLineText':
       case 'LongText':
       case 'Attachment':
       case 'Collaborator':
+      case 'GeoData':
         return ['character', 'text', 'varchar'];
 
       case 'Checkbox':
@@ -912,7 +762,7 @@ export class SqliteUi {
           'bigint',
           'int2',
           'int8',
-          'boolean'
+          'boolean',
         ];
 
       case 'MultiSelect':
@@ -930,7 +780,7 @@ export class SqliteUi {
           'mediumint',
           'bigint',
           'int2',
-          'int8'
+          'int8',
         ];
 
       case 'Time':
@@ -942,7 +792,7 @@ export class SqliteUi {
           'mediumint',
           'bigint',
           'int2',
-          'int8'
+          'int8',
         ];
 
       case 'PhoneNumber':
@@ -966,7 +816,7 @@ export class SqliteUi {
           'real',
           'double',
           'double precision',
-          'float'
+          'float',
         ];
 
       case 'Decimal':
@@ -986,7 +836,7 @@ export class SqliteUi {
           'bigint',
           'int2',
           'int8',
-          'numeric'
+          'numeric',
         ];
 
       case 'Percent':
@@ -1003,7 +853,7 @@ export class SqliteUi {
           'bigint',
           'int2',
           'int8',
-          'numeric'
+          'numeric',
         ];
 
       case 'Duration':
@@ -1015,15 +865,11 @@ export class SqliteUi {
           'mediumint',
           'bigint',
           'int2',
-          'int8'
+          'int8',
         ];
 
       case 'Rating':
         return [
-          'real',
-          'double',
-          'double precision',
-          'float',
           'int',
           'integer',
           'tinyint',
@@ -1032,10 +878,15 @@ export class SqliteUi {
           'bigint',
           'int2',
           'int8',
-          'numeric'
+          'numeric',
+          'real',
+          'double',
+          'double precision',
+          'float',
         ];
 
       case 'Formula':
+      case 'Button':
         return ['text', 'varchar'];
 
       case 'Rollup':
@@ -1050,7 +901,7 @@ export class SqliteUi {
           'mediumint',
           'bigint',
           'int2',
-          'int8'
+          'int8',
         ];
 
       case 'Lookup':
@@ -1060,7 +911,7 @@ export class SqliteUi {
         return ['date', 'varchar'];
 
       case 'DateTime':
-      case 'CreateTime':
+      case 'CreatedTime':
       case 'LastModifiedTime':
         return ['datetime', 'timestamp'];
 
@@ -1073,7 +924,7 @@ export class SqliteUi {
           'mediumint',
           'bigint',
           'int2',
-          'int8'
+          'int8',
         ];
 
       case 'Barcode':
@@ -1083,38 +934,41 @@ export class SqliteUi {
         return ['text'];
       case 'JSON':
         return ['text'];
-
-      case 'Button':
       default:
         return dbTypes;
     }
   }
 
   static getUnsupportedFnList() {
-    return ['LOG', 'EXP', 'POWER', 'SQRT'];
+    return [
+      'XOR',
+      'REGEX_MATCH',
+      'REGEX_EXTRACT',
+      'REGEX_REPLACE',
+      'VALUE',
+      'COUNTA',
+      'COUNT',
+      'DATESTR',
+    ];
+  }
+
+  static getCurrentDateDefault(_col: Partial<ColumnType>) {
+    return null;
+  }
+
+  static isEqual(dataType1: string, dataType2: string) {
+    if (dataType1 === dataType2) return true;
+
+    const abstractType1 = this.getAbstractType({ dt: dataType1 });
+    const abstractType2 = this.getAbstractType({ dt: dataType2 });
+
+    if (
+      abstractType1 &&
+      abstractType1 === abstractType2 &&
+      ['integer', 'float'].includes(abstractType1)
+    )
+      return true;
+
+    return false;
   }
 }
-
-// module.exports = PgUiHelp;
-/**
- * @copyright Copyright (c) 2021, Xgene Cloud Ltd
- *
- * @author Naveen MR <oof1lab@gmail.com>
- * @author Pranav C Balan <pranavxc@gmail.com>
- *
- * @license GNU AGPL version 3 or any later version
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
- */

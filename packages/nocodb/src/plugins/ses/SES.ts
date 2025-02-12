@@ -1,8 +1,9 @@
-import { IEmailAdapter } from 'nc-plugin';
 import nodemailer from 'nodemailer';
-import Mail from 'nodemailer/lib/mailer';
-import AWS from 'aws-sdk';
-import { XcEmail } from '../../interface/IEmailAdapter';
+
+import { SendRawEmailCommand, SES as SESClient } from '@aws-sdk/client-ses';
+import type { IEmailAdapter } from '~/types/nc-plugin';
+import type Mail from 'nodemailer/lib/mailer';
+import type { XcEmail } from '~/interface/IEmailAdapter';
 
 export default class SES implements IEmailAdapter {
   private transporter: Mail;
@@ -13,26 +14,35 @@ export default class SES implements IEmailAdapter {
   }
 
   public async init(): Promise<any> {
-    const sesOptions: any = {
-      accessKeyId: this.input.access_key,
-      secretAccessKey: this.input.access_secret,
-      region: this.input.region
-    };
+    const ses = new SESClient({
+      apiVersion: '2006-03-01',
+      region: this.input.region,
+      credentials: {
+        accessKeyId: this.input.access_key,
+        secretAccessKey: this.input.access_secret,
+      },
+    });
 
     this.transporter = nodemailer.createTransport({
-      SES: new AWS.SES(sesOptions)
+      SES: {
+        ses,
+        aws: { SendRawEmailCommand },
+      },
     });
   }
 
   public async mailSend(mail: XcEmail): Promise<any> {
     if (this.transporter) {
-        this.transporter.sendMail({ ...mail, from: this.input.from }, (err, info) => {
-            if (err) {
-                console.log(err);
-              } else {
-                console.log('Message sent: ' + info.response);
-              }
-        });
+      this.transporter.sendMail(
+        { ...mail, from: this.input.from },
+        (err, info) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log('Message sent: ' + info.response);
+          }
+        },
+      );
     }
   }
 
@@ -41,33 +51,11 @@ export default class SES implements IEmailAdapter {
       await this.mailSend({
         to: this.input.from,
         subject: 'Test email',
-        html: 'Test email'
+        html: 'Test email',
       } as any);
-      return true
+      return true;
     } catch (e) {
       throw e;
     }
   }
 }
-
-/**
- * @copyright Copyright (c) 2021, Xgene Cloud Ltd
- *
- * @author Wing-Kam Wong <wingkwong.code@gmail.com>
- *
- * @license GNU AGPL version 3 or any later version
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
- */
